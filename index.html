@@ -10,11 +10,74 @@
     <title>Social Media</title>
 </head>
 <body>
-    <div id="login"> <!--Paco adios-->
-
+    <div id="login" class="hidden"> <!--Paco adios-->
+      <div id="login-container">
+        <div>
+          <img src="" alt="">
+        </div>
+        <div>
+          <form action="">
+            <input type="text" class="" name="email" id="email" placeholder="Email address">
+            <input type="password" class="" name="password" id="password" placeholder="Password">
+          </form>
+          <div>
+            <button value="1" class="btn btn-primary" name="login" type="submit" id="">Log in</button>
+          </div>
+          <div>
+            <a href="">Forgot password?</a>
+          </div>
+          <div class="_6ltg">
+            <a role="button" class="btn btn-primary" href="#" id="" >Create new account</a>
+          </div>
+        </div>
+      </div>
+      
     </div>
 
-    <div id="main-page"></div> <!--Paco-->
+    <div id="register" class="hidden">
+      <div id="register-container">
+        <form method="post" id="reg" name="reg" action="https://m.facebook.com/reg/?privacy_mutation_token=eyJ0eXBlIjowLCJjcmVhdGlvbl90aW1lIjoxNjgyNTA4NzE4LCJjYWxsc2l0ZV9pZCI6MjY5NTQ4NDUzMDcyMDk1MX0%3D" onsubmit="return false;">
+          <div>
+            <input type="text" class="" data-type="text" name="username" value="" placeholder="Username" id="" tabindex="0">
+          </div>
+          <div>
+            <input type="email" class="" data-type="text" name="email" value="" placeholder="Email adress" id="" tabindex="0">
+          </div>
+          <div>
+            <input type="password" class="" data-type="text" name="password" value="" placeholder="Password" id="" tabindex="0">
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="main-page" class="">  <!--Paco-->
+      <nav class="navbar navbar-light bg-light justify-content-between">
+        <a class="navbar-brand" href="#">Mongito</a>
+        <form class="form-inline">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </nav>
+
+      <div id="main-feed">
+        <!-- <div id="post" class="col">
+          <div class="card">
+            <img src="path" class="card-img-top" alt="Item 1">
+            <div class="card-body">
+              <h5 class="card-title">Title</h5>
+              <p class="card-text">Body</p>
+              <form>
+                <input class="form-control" type="search" placeholder="Write a comment..." aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">...</button>
+              </form>
+              
+            </div>
+          </div>
+        </div> -->
+
+      </div>
+
+    </div>
 
     <div id="profile"></div> <!--K-->
 
