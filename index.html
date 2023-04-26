@@ -10,31 +10,32 @@
     <title>Social Media</title>
 </head>
 <body>
-    <div id="login" class="hidden"> <!--Paco adios-->
-      <div id="login-container">
-        <div>
-          <img src="" alt="">
-        </div>
-        <div>
-          <form action="">
-            <input type="text" class="" name="email" id="email" placeholder="Email address">
-            <input type="password" class="" name="password" id="password" placeholder="Password">
+    <div id="login-view" class=""> <!--Paco adios-->
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <h1 class="text-center my-5">Login</h1>
+          <form>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" name="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" id="password" required>
+            </div>
+            <button type="submit" id="login-button" class="btn btn-primary">Login</button>
           </form>
-          <div>
-            <button value="1" class="btn btn-primary" name="login" type="submit" id="">Log in</button>
-          </div>
-          <div>
-            <a href="">Forgot password?</a>
-          </div>
-          <div class="_6ltg">
-            <a role="button" class="btn btn-primary" href="#" id="" >Create new account</a>
-          </div>
         </div>
       </div>
-      
+      <hr>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <a role="button" class="btn btn-primary" href="#" id="" >Create new account</a>
+        </div>
+      </div>
     </div>
 
-    <div id="register" class="hidden">
+    <div id="register-view" class="hidden">
       <div id="register-container">
         <form method="post" id="reg" name="reg" action="https://m.facebook.com/reg/?privacy_mutation_token=eyJ0eXBlIjowLCJjcmVhdGlvbl90aW1lIjoxNjgyNTA4NzE4LCJjYWxsc2l0ZV9pZCI6MjY5NTQ4NDUzMDcyMDk1MX0%3D" onsubmit="return false;">
           <div>
@@ -50,7 +51,7 @@
       </div>
     </div>
 
-    <div id="main-page" class="">  <!--Paco-->
+    <div id="main-view" class="hidden">  <!--Paco-->
       <nav class="navbar navbar-light bg-light justify-content-between">
         <a class="navbar-brand" href="#">Mongito</a>
         <form class="form-inline">
@@ -59,25 +60,10 @@
         </form>
       </nav>
 
-      <div id="main-feed">
-        <!-- <div id="post" class="col">
-          <div class="card">
-            <img src="path" class="card-img-top" alt="Item 1">
-            <div class="card-body">
-              <h5 class="card-title">Title</h5>
-              <p class="card-text">Body</p>
-              <form>
-                <input class="form-control" type="search" placeholder="Write a comment..." aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">...</button>
-              </form>
-              
-            </div>
-          </div>
-        </div> -->
-
-      </div>
-
+      <div id="main-feed"></div>
     </div>
+
+    <div id="post-view" class="hidden"></div>
 
     <div id="profile"></div> <!--K-->
 

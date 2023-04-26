@@ -5,7 +5,12 @@ const API_URL = "http://localhost:8080/"
 let user = { id: "6445388da8130f4b9f500867" }
 
 ///////////////////////////////Variables Paco
+const loginView = document.getElementById('login-view');
+const registerView = document.getElementById('register-view');
+const mainView = document.getElementById('main-view');
+const postView = document.getElementById('post-view');
 const mainFeed =  document.getElementById('main-feed');
+const loginButton = document.getElementById('login-button');
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMzNDVkNGM4NGEzMTQiLCJpYXQiOjE2ODI1MDY5NjJ9.wyXaMIsOWZapkwcvZsM9FJooyZ6uRD4gX-JjRy4sboI';
 
 
@@ -14,7 +19,7 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMz
 
 //Axios get user info
 
-// showUser();
+// showUser();  ________________________
 
 async function showUser(){
   try{
@@ -29,16 +34,46 @@ async function showUser(){
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
-// Display main feed
+async function login(e) {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const response = await axios.post(API_URL + 'users/login', {
+      email: email,
+      password: password
+    });
+    if (response.status === 200) {
+      alert('Login successful!');
+      // Store token in LocalStorage
+      let token = response.data.token;
+      localStorage.setItem('token', token);
+      // Go to mainView
+      loginView.classList.add('hidden');
+      mainView.classList.remove('hidden');
+      displayMainFeed();
+    } else {
+      alert('Incorrect email/password. Please try again.');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('An error occurred during login. Please try again.');
+  }
+}
+
+loginButton.addEventListener('click', login);
+
+
 async function displayMainFeed() {
   try {
-    let friendsPosts = await axios.get(API_URL + 'posts/getFriendsPosts',{
+    let response = await axios.get(API_URL + 'posts/getFriendsPosts',{
       headers: {
         Authorization: token
       }
     });
 
-    friendsPosts = friendsPosts.data.posts;
+    friendsPosts = response.data.posts;
 
     friendsPosts.forEach(post => {
       const col = document.createElement('div')
@@ -86,4 +121,4 @@ async function displayMainFeed() {
   }
 };
 
-displayMainFeed();
+// displayMainFeed();_____________________
