@@ -26,70 +26,32 @@
           </div>
 
 
-          <!--MODAL!-->
-          <div class="modal" id="new-post" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
-            <div class="modal-dialog d-flex justify-content-center">
-                <div class="modal-content w-75">
-                    <div class="modal-header">
-                        <h5 class="modal-title">New post!</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-
-
-                        <form id="post-form" enctype="multipart/form-data" method="post">
-                            <!-- Title -->
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="posttitle">Post Title</label>
-                                <input type="text" id="posttitle" class="form-control" />
-                                
-                            </div>
-        
-                           
-                            <!-- Body -->
-                            <div class="form-outline mb-4">
-                                <label class="form-label" for="postbody">Post text</label>
-                                <textarea id="postbody" rows="4" class="form-control"></textarea>
-                              
-                            </div>
-
-                             <!-- Upload an image -->
-                             <div class="form-outline mb-4">
-                                <label class="form-label" for="postImage">Upload an image</label>
-                                <input type="file" id="postimage" name="filename">
-                            </div>
-        
-        
-                            <!-- Checkbox -->
-                            
-        
-                            <!-- Submit button -->
-                            <button type="submit" class="btn btn-primary btn-block">Post</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal -->
+      
 
 
 
-            <div id="profile-posts" class="d-flex flex-wrap bg bg-danger p-3">
+            <div id="profile-posts" class="bg bg-danger p-3">
              
 
             </div>
 
 
-            <div id="profile-friends" class="d-flex flex-wrap bg bg-primary p-3">
-                
-                <!-- <div class="card" style="width: 18rem;">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
+            <div id="profile-friends" class="bg bg-primary p-3 w-100">
+              <!-- style="width: 18rem" -->
+                 <div class="card" > 
+                  <div class="row no-gutters w-100"> <!--NEW-->
+                    <div class="col-md-4 d-flex justify-content-center align-items-center"> <!--NEW-->
+                    <img src="./assets/post_img.png" class="img-fluid" alt="...">
+                    </div>
+                    <div class="card-body col-md-8">
                       <h5 class="card-title">Card title</h5>
                       <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                       <a href="#" class="btn btn-primary">Go somewhere</a>
                     </div>
                   </div>
+                  </div>
+
+<!--
                   <div class="card" style="width: 18rem;">
                     <img src="..." class="card-img-top" alt="...">
                     <div class="card-body">
@@ -124,7 +86,51 @@
 
     <div id="users"> </div> <!--K-->
 
-  
+      <!--MODAL!-->
+      <div class="modal" id="new-post" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+        <div class="modal-dialog d-flex justify-content-center">
+            <div class="modal-content w-75">
+                <div class="modal-header">
+                    <h5 class="modal-title">New post!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+
+
+                    <form id="post-form" enctype="multipart/form-data" method="post">
+                        <!-- Title -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="posttitle">Post Title</label>
+                            <input type="text" id="posttitle" class="form-control" />
+                            
+                        </div>
+    
+                       
+                        <!-- Body -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="postbody">Post text</label>
+                            <textarea id="postbody" rows="4" class="form-control"></textarea>
+                          
+                        </div>
+
+                         <!-- Upload an image -->
+                         <div class="form-outline mb-4">
+                            <label class="form-label" for="postImage">Upload an image</label>
+                            <input type="file" id="postimage" name="filename">
+                        </div>
+    
+    
+                        <!-- Checkbox -->
+                        
+    
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-block">Post</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
