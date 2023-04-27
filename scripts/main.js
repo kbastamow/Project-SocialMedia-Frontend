@@ -13,6 +13,11 @@ const posttitle= document.getElementById("posttitle");
 const postbody= document.getElementById("postbody");
 const postimage = document.getElementById('postimage')
 
+//Update post-form
+const posttitleUD= document.getElementById("posttitle-update");
+const postbodyUD= document.getElementById("postbody-update");
+const postimageUD = document.getElementById('postimage-update')
+
 //count characters of post body
 let currentCount = document.getElementById("current-count")
 
@@ -118,7 +123,15 @@ async function userPosts(){
             <p class="card-text">${post.body}</p> 
             <p class="small">${post.likes.length} likes</p>          
           </div>`
-                
+    
+     const updateBtn = document.createElement("button")
+     updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
+     updateBtn.textContent = 'Update post'
+     updateBtn.addEventListener('click', function(e){
+      updatePost(e, post._id)
+     })
+     styleDiv.querySelector(".card-body").appendChild(updateBtn)
+
     card.appendChild(styleDiv);
     profilePosts.appendChild(card) 
   });
@@ -127,7 +140,7 @@ async function userPosts(){
 }
 }
 
-//THIS DOES NOT WORK UNTIL WE HAVE LOGIN IN PLACE as I need req.user._id value!!!
+
 async function createPost(e){ 
   e.preventDefault();
 
@@ -154,14 +167,43 @@ async function createPost(e){
   }
 }
 
+
+
+
+async function updatePost(e, postId){ 
+  e.preventDefault();
+
+  let tokenKat = localStorage.getItem('token')
+
+  
+  const formData = new FormData();
+  formData.append("title", posttitleUD.value);
+  formData.append("body", postbodyUD.value)
+  formData.append("image", postimageUD.files[0])
+  console.log(formData)
+
+  try{
+    const res = await axios.put(API_URL + 'posts/update/' + postId, formData, {
+      headers: {
+        "Authorization": tokenKat,
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    console.log(res.data)
+    userPosts()
+  } catch(error){
+    console.log(error)
+  }
+}
+
+
+
 //Counts the characters left when creating a post
 function countCharacters(){
 let enteredText = postbody.value.length;
 let whatsLeft = 700 - enteredText;
 currentCount.innerText = whatsLeft + "/700";
 };
-
-
 
 
 
