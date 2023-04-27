@@ -7,6 +7,17 @@ const profilePosts = document.getElementById("profile-posts")
 
 const postForm = document.getElementById("post-form")
 
+
+//Create post-form
+const posttitle= document.getElementById("posttitle");
+const postbody= document.getElementById("postbody");
+const postimage = document.getElementById('postimage')
+
+//count characters of post body
+let currentCount = document.getElementById("current-count")
+
+
+
 let userInfo = { id: '6445388da8130f4b9f500867' }
 
 ///////////////////////////////Variables Paco
@@ -122,10 +133,7 @@ async function createPost(e){
 
   let tokenKat = localStorage.getItem('token')
 
-
-  const posttitle= document.getElementById("posttitle");
-  const postbody= document.getElementById("postbody");
-  const postimage = document.getElementById('postimage')
+  
   const formData = new FormData();
   formData.append("title", posttitle.value);
   formData.append("body", postbody.value)
@@ -146,6 +154,17 @@ async function createPost(e){
   }
 }
 
+//Counts the characters left when creating a post
+function countCharacters(){
+let enteredText = postbody.value.length;
+let whatsLeft = 700 - enteredText;
+currentCount.innerText = whatsLeft + "/700";
+};
+
+
+
+
+
 function clearDisplay(element){
  while (element.firstChild){
     element.removeChild(element.firstChild);
@@ -156,6 +175,8 @@ showUser();
 userPosts();
 
 postForm.addEventListener("submit", createPost)
+postbody.addEventListener("input", countCharacters)
+
 
 ///////////////////////////////////////////////////////////////////PACO functions
 

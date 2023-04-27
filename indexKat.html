@@ -86,7 +86,7 @@
 
     <div id="users"> </div> <!--K-->
 
-      <!--MODAL!-->
+      <!--MODAL TO CREATE POST!-->
       <div class="modal" id="new-post" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
         <div class="modal-dialog d-flex justify-content-center">
             <div class="modal-content w-75">
@@ -101,7 +101,7 @@
                         <!-- Title -->
                         <div class="form-outline mb-4">
                             <label class="form-label" for="posttitle">Post Title</label>
-                            <input type="text" id="posttitle" class="form-control" />
+                            <input type="text" id="posttitle" class="form-control" required />
                             
                         </div>
     
@@ -109,7 +109,9 @@
                         <!-- Body -->
                         <div class="form-outline mb-4">
                             <label class="form-label" for="postbody">Post text</label>
-                            <textarea id="postbody" rows="4" class="form-control"></textarea>
+                            <textarea id="postbody" rows="4" class="form-control" required maxlength="700"></textarea>
+                            <span id="current-count" class="small text-muted">0/700</span>
+                          
                           
                         </div>
 
@@ -124,7 +126,7 @@
                         
     
                         <!-- Submit button -->
-                        <button type="submit" class="btn btn-primary btn-block">Post</button>
+                        <button type="submit" class="btn btn-primary btn-block col-12 mx-auto">Post</button>
                     </form>
                 </div>
             </div>
