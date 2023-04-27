@@ -21,7 +21,7 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMz
 
 ///////////////////////////////////////////////////////////////KAT functions
 
-/*
+
 
 //Axios get user info
 
@@ -68,7 +68,7 @@ async function userPosts(){
   clearDisplay(profilePosts)
   try{
 
-  let tokenKat = " " //Change this when token is in local storage!!!!!!
+  let tokenKat = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ1Mzg4ZGE4MTMwZjRiOWY1MDA4NjciLCJpYXQiOjE2ODI1OTQyMTN9.GyxtfvM-IkTeZ_GlvuGC7QT9FkntvJ4BZ-cBicLjUoU" //Change this when token is in local storage!!!!!!
   const res = await axios.get(API_URL + 'posts/getUsersPosts', {
       headers: {
         "Authorization": tokenKat,
@@ -79,24 +79,32 @@ async function userPosts(){
   console.log(posts);
   posts.posts.forEach(post => {
 
-    
     const card = document.createElement("div");
     card.setAttribute('class', 'card m-3')
-    card.setAttribute('style', 'width: 18rem')
+    const styleDiv = document.createElement("div");
+    styleDiv.setAttribute('class', 'row no-gutters w-100')
+    let picture = './assets/post_img.png'
+    // card.setAttribute('style', 'width: 18rem')
     if (post.image){
-      const picture = API_URL + 'uploads/posts/' + post.image
+      picture = API_URL + 'uploads/posts/' + post.image
       console.log(picture);
+    } 
+      const div = document.createElement("div")
+      div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
       const img = document.createElement('img');
-      img.setAttribute('class', 'card-img-top')
+      img.setAttribute('class', 'img-fluid px-1')
       img.setAttribute('src', picture)
-      card.appendChild(img);
-    }
-    card.innerHTML += `
-          <div class="card-body">
+      div.appendChild(img)
+      styleDiv.appendChild(div);
+
+    styleDiv.innerHTML += `
+          <div class="card-body col-md-8">
             <h5 class="card-title">${post.title}</h5>
-            <p class="card-text">${post.body}</p>
-           <a href="#" class="btn btn-primary">Go somewhere</a>
-         </div>`
+            <p class="card-text">${post.body}</p> 
+            <p class="small">${post.likes.length} likes</p>          
+          </div>`
+                
+    card.appendChild(styleDiv);
     profilePosts.appendChild(card) 
   });
 } catch(error){
@@ -108,7 +116,7 @@ async function userPosts(){
 async function createPost(e){ 
   e.preventDefault();
 
-  let tokenKat = " " //Change this when token is in local storage!!!!!!
+  let tokenKat = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ1Mzg4ZGE4MTMwZjRiOWY1MDA4NjciLCJpYXQiOjE2ODI1OTQyMTN9.GyxtfvM-IkTeZ_GlvuGC7QT9FkntvJ4BZ-cBicLjUoU" //Change this when token is in local storage!!!!!!
 
 
   const posttitle= document.getElementById("posttitle");
@@ -136,6 +144,8 @@ async function createPost(e){
 }
 
 
+
+
 function clearDisplay(element){
  while (element.firstChild){
     element.removeChild(element.firstChild);
@@ -144,7 +154,7 @@ function clearDisplay(element){
  
 showUser();
 userPosts();
-*/
+
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
