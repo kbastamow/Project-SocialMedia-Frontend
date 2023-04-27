@@ -71,7 +71,8 @@ async function userPosts(){
   clearDisplay(profilePosts)
   try{
 
-  let tokenKat = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ1Mzg4ZGE4MTMwZjRiOWY1MDA4NjciLCJpYXQiOjE2ODI1OTQyMTN9.GyxtfvM-IkTeZ_GlvuGC7QT9FkntvJ4BZ-cBicLjUoU" //Change this when token is in local storage!!!!!!
+  let tokenKat = localStorage.getItem('token')
+  console.log("token from local storage" + tokenKat)
   const res = await axios.get(API_URL + 'posts/getUsersPosts', {
       headers: {
         "Authorization": tokenKat,
@@ -119,7 +120,7 @@ async function userPosts(){
 async function createPost(e){ 
   e.preventDefault();
 
-  let tokenKat = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ1Mzg4ZGE4MTMwZjRiOWY1MDA4NjciLCJpYXQiOjE2ODI1OTQyMTN9.GyxtfvM-IkTeZ_GlvuGC7QT9FkntvJ4BZ-cBicLjUoU" //Change this when token is in local storage!!!!!!
+  let tokenKat = localStorage.getItem('token')
 
 
   const posttitle= document.getElementById("posttitle");
@@ -135,7 +136,6 @@ async function createPost(e){
     const res = await axios.post(API_URL + 'posts/create', formData, {
       headers: {
         "Authorization": tokenKat,
-        "userId": userInfo.id,  //Replace this when login is in place!!
         "Content-Type": "multipart/form-data"
       }
     })
@@ -146,9 +146,6 @@ async function createPost(e){
   }
 }
 
-
-
-
 function clearDisplay(element){
  while (element.firstChild){
     element.removeChild(element.firstChild);
@@ -158,6 +155,7 @@ function clearDisplay(element){
 showUser();
 userPosts();
 
+postForm.addEventListener("submit", createPost)
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
