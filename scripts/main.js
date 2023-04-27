@@ -16,6 +16,9 @@ const mainView = document.getElementById('main-view');
 const postView = document.getElementById('post-view');
 const mainFeed =  document.getElementById('main-feed');
 const loginButton = document.getElementById('login-button');
+const signUpButton = document.getElementById('sign-up-button');
+const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
+
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMzNDVkNGM4NGEzMTQiLCJpYXQiOjE2ODI1MDY5NjJ9.wyXaMIsOWZapkwcvZsM9FJooyZ6uRD4gX-JjRy4sboI';
 
 
@@ -135,8 +138,41 @@ async function login(e) {
   }
 }
 
-loginButton.addEventListener('click', login);
+async function signUp(e) {
+  e.preventDefault();
+  const username = document.getElementById('new-username').value;
+  const email = document.getElementById('new-email').value;
+  const password = document.getElementById('new-password').value;
+  const passwordConfirm = document.getElementById('new-password-confirm').value;
 
+  if (password !== passwordConfirm) {
+    return alert('Passwords don\'t match');
+  }
+
+  try {
+    const response = await axios.post(API_URL + 'users/create', {
+      username: username,
+      email: email,
+      password: password
+    });
+    console.log(response);
+    if (response.status === 201) {
+      alert(response.data.message);
+      // Store token in LocalStorage
+      let token = response.data.token;
+      localStorage.setItem('token', token);
+      // Go to mainView
+      registerView.classList.add('hidden');
+      loginView.classList.remove('hidden');
+      // displayMainFeed();
+    } else {
+      alert('Incorrect email/password. Please try again.');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('An error occurred during login. Please try again.');
+  }
+}
 
 async function displayMainFeed() {
   try {
@@ -169,7 +205,7 @@ async function displayMainFeed() {
       button.className = 'btn btn-primary'
 
       // img.src = post.image
-      img.setAttribute('src', 'http://localhost:8080/uploads/users/' + user.image)
+      img.setAttribute('src', 'http://localhost:8080/uploads/users/' + post.image)
       cardTitle.textContent = post.title
       cardMessage.textContent = post.body
       input.placeholder = 'Write a comment...'
@@ -194,5 +230,14 @@ async function displayMainFeed() {
   }
 };
 
-displayMainFeed();
+async function redirectToSignUp() {
+  loginView.classList.add('hidden');
+  registerView.classList.remove('hidden');
+};
+
+loginButton.addEventListener('click', login);
+signUpButton.addEventListener('click', signUp);
+redirectToSignUpButton.addEventListener('click', redirectToSignUp);
+
+// displayMainFeed();
 
