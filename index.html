@@ -10,7 +10,7 @@
     <title>Social Media</title>
 </head>
 <body>
-    <div id="login-view" class=""> <!--Paco adios-->
+    <div id="login-view" class=""> <!--LOGIN VIEW-->
       <div class="row justify-content-center">
         <div class="col-md-6">
           <h1 class="text-center my-5">Login</h1>
@@ -29,29 +29,41 @@
       </div>
       <hr>
       <div class="row justify-content-center">
+        <h5>Not a member yet?</h3>
         <div class="col-md-6">
-          <a role="button" class="btn btn-primary" href="#" id="" >Create new account</a>
+          <a role="button" class="btn btn-primary" href="#" id="redirect-to-sign-up" >Create new account</a>
         </div>
       </div>
     </div>
 
-    <div id="register-view" class="hidden">
-      <div id="register-container">
-        <form method="post" id="reg" name="reg" action="https://m.facebook.com/reg/?privacy_mutation_token=eyJ0eXBlIjowLCJjcmVhdGlvbl90aW1lIjoxNjgyNTA4NzE4LCJjYWxsc2l0ZV9pZCI6MjY5NTQ4NDUzMDcyMDk1MX0%3D" onsubmit="return false;">
-          <div>
-            <input type="text" class="" data-type="text" name="username" value="" placeholder="Username" id="" tabindex="0">
-          </div>
-          <div>
-            <input type="email" class="" data-type="text" name="email" value="" placeholder="Email adress" id="" tabindex="0">
-          </div>
-          <div>
-            <input type="password" class="" data-type="text" name="password" value="" placeholder="Password" id="" tabindex="0">
-          </div>
-        </form>
+    <div id="register-view" class="hidden"> <!--REGISTER VIEW-->
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <h1 class="text-center my-5">Create new account</h1>
+          <form>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="username" name="username" class="form-control" id="new-username" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" name="email" class="form-control" id="new-email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" id="new-password" required>
+            </div>
+            <div class="mb-3">
+              <label for="password-confirm" class="form-label">Repeat your password</label>
+              <input type="password" name="password-confirm" class="form-control" id="new-password-confirm" required>
+            </div>
+            <button type="submit" id="sign-up-button" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
       </div>
     </div>
 
-    <div id="main-view" class="hidden">  <!--Paco-->
+    <div id="main-view" class="hidden">  <!--MAIN VIEW-->
       <nav class="navbar navbar-light bg-light justify-content-between">
         <a class="navbar-brand" href="#">Mongito</a>
         <form class="form-inline">
@@ -80,6 +92,8 @@
 
     </div>
 
+    <div id="post-view" class="hidden">   <!--POST VIEW-->
+    </div>
 
 
 
