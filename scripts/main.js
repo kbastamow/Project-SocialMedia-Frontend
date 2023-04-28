@@ -74,7 +74,7 @@ async function showUser(){
                       <p class="card-text">${user.bio}</p>
                     </div>
                     <ul class="list-group list-group-flush">
-                      <li class="list-group-item">Friends</li>
+                      <li class="list-group-item">People I follow</li>
                       <li class="list-group-item">A second item</li>
                       <li class="list-group-item">A third item</li>
                     </ul>
