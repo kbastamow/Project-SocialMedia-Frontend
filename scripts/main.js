@@ -6,7 +6,9 @@ const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
 
 const postForm = document.getElementById("post-form")
-
+const postFormUD = document.getElementById("post-form-update")
+//btns
+const createPostBtn = document.getElementById("display-create")
 
 //Create post-form
 const posttitle= document.getElementById("posttitle");
@@ -21,7 +23,12 @@ const postimageUD = document.getElementById('postimage-update')
 //count characters of post body
 let currentCount = document.getElementById("current-count")
 
-
+//variable that stores post id information to pass onto update form
+let postInfo = {
+  "title": "",
+  "body": "",
+  "postId": "",
+} 
 
 let userInfo = { id: '6445388da8130f4b9f500867' }
 
@@ -63,10 +70,11 @@ async function showUser(){
                     <img src=${picture} class="card-img-top" alt="Profile picture">
                     <div class="card-body">
                       <h5 class="card-title">${user.username}</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      <p class="text-primary">${user.title}</p>
+                      <p class="card-text">${user.bio}</p>
                     </div>
                     <ul class="list-group list-group-flush">
-                      <li class="list-group-item">An item</li>
+                      <li class="list-group-item">Friends</li>
                       <li class="list-group-item">A second item</li>
                       <li class="list-group-item">A third item</li>
                     </ul>
@@ -124,13 +132,21 @@ async function userPosts(){
             <p class="small">${post.likes.length} likes</p>          
           </div>`
     
+
+
      const updateBtn = document.createElement("button")
      updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
+     updateBtn.setAttribute('data-bs-toggle','modal')
+     updateBtn.setAttribute('data-bs-target', '#modal-post')
      updateBtn.textContent = 'Update post'
-     updateBtn.addEventListener('click', function(e){
-      updatePost(e, post._id)
-     })
+
+     updateBtn.addEventListener('click', function(e) {
+      showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
      styleDiv.querySelector(".card-body").appendChild(updateBtn)
+
+
+
+
 
     card.appendChild(styleDiv);
     profilePosts.appendChild(card) 
@@ -168,22 +184,23 @@ async function createPost(e){
 }
 
 
+function showUpdateForm(){
 
+}
 
-async function updatePost(e, postId){ 
+async function updatePost(e){ 
   e.preventDefault();
-
-  let tokenKat = localStorage.getItem('token')
-
   
+  let tokenKat = localStorage.getItem('token')
   const formData = new FormData();
   formData.append("title", posttitleUD.value);
   formData.append("body", postbodyUD.value)
-  formData.append("image", postimageUD.files[0])
-  console.log(formData)
-
+  if (postimageUD.length != 0) formData.append("image", postimageUD.files[0])
+  
+  
+  //in the following, postId is a global variable where I've temporarily stored post's id when it's update button is clicked
   try{
-    const res = await axios.put(API_URL + 'posts/update/' + postId, formData, {
+    const res = await axios.put(API_URL + 'posts/update/' + postInfo.postId, formData, {
       headers: {
         "Authorization": tokenKat,
         "Content-Type": "multipart/form-data"
@@ -191,6 +208,11 @@ async function updatePost(e, postId){
     })
     console.log(res.data)
     userPosts()
+    
+    
+    posttitleUD.removeAttribute('value', postInfo.title);
+    console.log(postbodyUD)
+    postbodyUD.textContent = ""
   } catch(error){
     console.log(error)
   }
@@ -212,13 +234,45 @@ function clearDisplay(element){
     element.removeChild(element.firstChild);
     }
   }
+
+function showForm(e){
+  e.preventDefault();
+  postFormUD.classList.add("hidden")
+  postForm.classList.remove("hidden")
+}
+
+function showFormUD(e, dataFromBtn){
+  e.preventDefault();
+  postInfo = {  //Clear global variable in case there is old data left
+    "title":"",
+    "body": "",
+    "postId": ""
+  }
+
+  postInfo = {  //Set with new variables
+    title: dataFromBtn.title,
+    body: dataFromBtn.body,
+    postId: dataFromBtn.postId
+  } 
+  console.log(postInfo.title)
+  console.log(postInfo.body)
+  posttitleUD.setAttribute('value', postInfo.title);
+  console.log(postbodyUD)
+  postbodyUD.textContent = postInfo.body
+  //global variable that can store this data temporarily
+  
+  postForm.classList.add("hidden")
+  postFormUD.classList.remove("hidden")
+}
+
  
 showUser();
 userPosts();
 
 postForm.addEventListener("submit", createPost)
+postFormUD.addEventListener("submit", updatePost)
 postbody.addEventListener("input", countCharacters)
-
+createPostBtn.addEventListener("click", showForm)
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
