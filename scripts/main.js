@@ -58,6 +58,7 @@ const forgotPasswordLink = document.getElementById('forgot-password-link');
 const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
 const forgotPasswordForm = document.getElementById('forgot-password-form');
 const sendButtonRecover = document.getElementById('send-button-recover');
+const backToLoginButton = document.getElementById('back-to-login');
 
 
 
@@ -480,20 +481,18 @@ function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
   console.log("Write function to see other user's profile")
 }
 
-showUser(); // MARKER
-userPosts(); // MARKER
+// showUser(); // MARKER
+// userPosts(); // MARKER
 
-postForm.addEventListener("submit", createPost)
-postFormUD.addEventListener("submit", updatePost)
-updateUserForm.addEventListener("submit", updateUser)
-postbody.addEventListener("input", countCharacters)
-createPostBtn.addEventListener("click", showForm)
+// postForm.addEventListener("submit", createPost)
+// postFormUD.addEventListener("submit", updatePost)
+// updateUserForm.addEventListener("submit", updateUser)
+// postbody.addEventListener("input", countCharacters)
+// createPostBtn.addEventListener("click", showForm)
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
-
-
-async function login(e) {
+loginButton.addEventListener('click', async (e) => {
   e.preventDefault();
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
@@ -519,9 +518,9 @@ async function login(e) {
     console.error(error);
     alert('An error occurred during login. Please try again.');
   }
-}
+});
 
-async function signUp(e) {
+signUpButton.addEventListener('click', async (e) => {
   e.preventDefault();
   const username = document.getElementById('new-username').value;
   const email = document.getElementById('new-email').value;
@@ -554,13 +553,12 @@ async function signUp(e) {
     console.error(error);
     alert('An error occurred during login. Please try again.');
   }
-}
+});
 
 forgotPasswordLink.addEventListener('click', (event) => {
   event.preventDefault();
   forgotPasswordModal.show();
 });
-
 
 sendButtonRecover.addEventListener('click', async (e) => {
   e.preventDefault();
@@ -582,6 +580,15 @@ sendButtonRecover.addEventListener('click', async (e) => {
   }
 });
 
+redirectToSignUpButton.addEventListener('click', () => {
+  loginView.classList.add('hidden');
+  registerView.classList.remove('hidden');
+});
+
+backToLoginButton.addEventListener('click', () => {
+  loginView.classList.remove('hidden');
+  registerView.classList.add('hidden');
+});
 
 async function displayMainFeed() {
   try {
@@ -626,16 +633,8 @@ async function displayMainFeed() {
   }
 };
 
-async function redirectToSignUp() {
-  loginView.classList.add('hidden');
-  registerView.classList.remove('hidden');
-};
-
-loginButton.addEventListener('click', login);
-signUpButton.addEventListener('click', signUp);
-redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
 // Start from main view: must uncomment next 3 lines
-loginView.classList.add('hidden');
-mainView.classList.remove('hidden');
-displayMainFeed();
+// loginView.classList.add('hidden');
+// mainView.classList.remove('hidden');
+// displayMainFeed();
