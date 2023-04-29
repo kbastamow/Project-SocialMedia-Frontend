@@ -191,13 +191,33 @@ async function userPosts(){
       div.appendChild(img)
       styleDiv.appendChild(div);
 
-    styleDiv.innerHTML += `
+      styleDiv.innerHTML += `
           <div class="card-body col-md-8">
             <h5 class="card-title">${post.title}</h5>
-            <p class="card-text">${post.body}</p> 
-            <p class="small">${post.likes.length} likes</p>          
+            <p class="card-text">${post.body}</p>
+            <hr>           
           </div>`
     
+     //Likes link
+
+     const childDiv = styleDiv.querySelector(".card-body");
+     if (post.likes.length > 0) {  //If there are any likes
+      const likes = document.createElement("button")
+      likes.innerText = post.likes.length + ' likes'
+      likes.setAttribute('class', 'btn btn-link d-block btn-sm text-success')
+      likes.setAttribute('data-bs-toggle','modal')
+      likes.setAttribute('data-bs-target','#list-modal')
+      likes.addEventListener("click", function(e){ showLikers(e, post._id)})
+     
+      childDiv.appendChild(likes);
+     } else {
+      const likes = document.createElement("p")
+      likes.innerText = post.likes.length + ' likes'
+      likes.setAttribute('class', 'small text-success')
+      childDiv.appendChild(likes);
+     }
+
+     //Update button
      const updateBtn = document.createElement("button")
      updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
      updateBtn.setAttribute('data-bs-toggle','modal')
@@ -344,8 +364,6 @@ async function showFollowers(e){
   clearDisplay(listmodalList)
   const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
 
-  
-  
   res.data.followers.forEach(person => {
     const li = document.createElement("li")
     li.setAttribute('class', 'container custom-height')
@@ -373,6 +391,35 @@ async function showFollowers(e){
 }
 }
 
+
+async function showLikers(e, postId){
+  e.preventDefault();
+  console.log(postId)
+
+  try {
+  listmodalTitle.innerText = 'People who liked your post'
+  clearDisplay(listmodalList)
+  const res = await axios.get(API_URL + 'posts/getbyid/' + postId)
+  console.log(res.data)
+  res.data.likes.forEach(person => {
+    const li = document.createElement("li")
+
+       const icon = document.createElement('span')
+       icon.innerHTML = `<i class="fa-solid fa-heart-circle-plus fa-xl" style="color: #f60909;"></i>`         
+       const personLink= document.createElement('button')
+       personLink.innerText = person.username
+       personLink.setAttribute('class', 'btn btn-link text-decoration-none')
+       personLink.addEventListener("click", function(e){otherUser(e, person.username) })
+
+       li.appendChild(icon)
+       li.appendChild(personLink)
+
+    listmodalList.appendChild(li)
+  })
+} catch(error) {
+  console.error(error)
+}
+}
 
 //Counts the characters left when creating a post
 function countCharacters(){
