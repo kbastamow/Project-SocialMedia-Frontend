@@ -120,7 +120,7 @@ baseInfo.setAttribute('class', 'card-body')
           "function": showFriends  //function but no parenthesis so I can pass it to button click-event
         }, {
           "button": "My followers",
-          "function": showFriends  //TO BE CHANGED
+          "function": showFollowers  
         }, {
           "button": "Account settings",
           "function": showFriends //TO BE CHANGED
@@ -278,38 +278,29 @@ async function showFriends(e){
   clearDisplay(usermodalList)
   try {
   const result = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
-  console.log(result.data)
-
   let picture = '../assets/no_image.jpeg'
   
-  result.data.following.forEach(friend => {
+  result.data.following.forEach(person => {
     const li = document.createElement("li")
     li.setAttribute('class', 'container custom-height')
 
 
-    if (friend.image){
-      picture = API_URL + 'uploads/users/' + friend.image
+    if (person.image){
+      picture = API_URL + 'uploads/users/' + person.image
     }
-    // const imgDiv = document.createElement("div")
-    // imgDiv.setAttribute('class', 'col-4 bg bg-danger d-flex justify-content-center')
     
     const image = document.createElement('img')
     image.setAttribute('src', picture)
     image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
-    
-    
-    
-    // imgDiv.innerHTML = `<img src=${picture} class='img-fluid rounded-circle'>`
 
-    const friendLink= document.createElement('button')
-    friendLink.innerText = friend.username
-    friendLink.setAttribute('class', 'btn btn-link')
-    // friendLink.addEventListener("click", "anotherUser")  //ADD THIS FUNCTION
+    const personLink= document.createElement('button')
+    personLink.innerText = person.username
+    personLink.setAttribute('class', 'btn btn-link')
+    personLink.addEventListener("click", function(e){otherUser(e, person.username) })
    
-    // imgDiv.appendChild(friendLink)
  
     li.appendChild(image)
-    li.appendChild(friendLink)
+    li.appendChild(personLink)
 
     usermodalList.appendChild(li)
   })
@@ -317,6 +308,46 @@ async function showFriends(e){
   console.error(error)
 }
 }
+
+async function showFollowers(e){
+  e.preventDefault();
+  usermodalTitle.innerText = 'People who follow you'
+  clearDisplay(usermodalList)
+  try {
+  const result = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+
+  
+  
+  result.data.followers.forEach(person => {
+    const li = document.createElement("li")
+    li.setAttribute('class', 'container custom-height')
+
+    let picture = '../assets/no_image.jpeg'
+    if (person.image){
+      picture = API_URL + 'uploads/users/' + person.image
+    }
+    const image = document.createElement('img')
+    image.setAttribute('src', picture)
+    image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+    
+    const personLink= document.createElement('button')
+    personLink.innerText = person.username
+    personLink.setAttribute('class', 'btn btn-link')
+    personLink.addEventListener("click", function(e){otherUser(e, person.username) })
+
+    li.appendChild(image)
+    li.appendChild(personLink)
+
+    usermodalList.appendChild(li)
+  })
+} catch(error) {
+  console.error(error)
+}
+}
+
+
+
+
 
 
 //Counts the characters left when creating a post
@@ -361,6 +392,12 @@ function showFormUD(e, dataFromBtn){
   postForm.classList.add("hidden")
   postFormUD.classList.remove("hidden")
 }
+
+function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
+  e.preventDefault();  
+  console.log("Write function to see other user's profile")
+}
+
 
  
 showUser();
