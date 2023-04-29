@@ -5,8 +5,6 @@ const profile = document.getElementById('profile')
 const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
 
-const postForm = document.getElementById("post-form")
-const postFormUD = document.getElementById("post-form-update")
 //btns
 const createPostBtn = document.getElementById("display-create")
 
@@ -14,19 +12,25 @@ const createPostBtn = document.getElementById("display-create")
 const posttitle= document.getElementById("posttitle");
 const postbody= document.getElementById("postbody");
 const postimage = document.getElementById('postimage')
-
+const postForm = document.getElementById("post-form")
 //Update post-form
 const posttitleUD= document.getElementById("posttitle-update");
 const postbodyUD= document.getElementById("postbody-update");
 const postimageUD = document.getElementById('postimage-update')
+const postFormUD = document.getElementById("post-form-update")
+//Update user form
+const updateBio = document.getElementById("update-bio")
+const updateTitle = document.getElementById("update-title")
+const updateImage = document.getElementById("update-image")
+const updateUserForm = document.getElementById("update-user")
 
 //count characters of post body
 let currentCount = document.getElementById("current-count")
 
 
 //modal for user card
-const usermodalTitle = document.getElementById("usermodal-title")
-const usermodalList = document.getElementById("usermodal-list")
+const listmodalTitle = document.getElementById("list-modal-title")
+const listmodalList = document.getElementById("list-modal-list")
 
 
 //variable that stores post id information to pass onto update form
@@ -48,6 +52,8 @@ const loginButton = document.getElementById('login-button');
 const signUpButton = document.getElementById('sign-up-button');
 const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
+
+//PACO: bootstrap.Modal crashes my page - not recognised???
 const forgotPasswordLink = document.getElementById('forgot-password-link');
 const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
 const forgotPasswordForm = document.getElementById('forgot-password-form');
@@ -67,13 +73,13 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMz
 async function showUser(){
   
   try{
+    clearDisplay(profileMain)
     // e.preventDefault();
     const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
     const user = res.data
  
     const card = document.createElement("div")
     card.setAttribute('class', 'card shadow w-100 mx-auto')
-    // card.setAttribute('style', 'width: 25rem')
    
     let picture = '../assets/no_image.jpeg'
     if (user.image){
@@ -98,14 +104,7 @@ baseInfo.setAttribute('class', 'card-body')
             baseInfo.innerHTML += userTitle
         }
 
-        const addTitleBtn = document.createElement("button")
-        addTitleBtn.textContent = 'Add or update title'
-        addTitleBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
-        // addTitleBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
-        baseInfo.appendChild(addTitleBtn)
-
-
-        const userBio= `<p class="card-text">You have not added information about yourself</p>`
+        let userBio= `<p class="card-text">You have not added information about yourself</p>`
         if (user.bio){
             userBio = `<p class="card-text">${user.bio}</p>`   
         }
@@ -113,9 +112,11 @@ baseInfo.setAttribute('class', 'card-body')
         baseInfo.innerHTML += userBio
 
         const addBioBtn = document.createElement("button")
-        addBioBtn.textContent = 'Add or update bio'
+        addBioBtn.textContent = 'Add/modify public profile'
         addBioBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
-        // addBioeBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
+        addBioBtn.setAttribute('data-bs-toggle','modal')
+        addBioBtn.setAttribute('data-bs-target','#form-modal')
+        addBioBtn.addEventListener('click', showUpdateUser )
         baseInfo.appendChild(addBioBtn)
 
 //Add the three links
@@ -127,7 +128,7 @@ baseInfo.setAttribute('class', 'card-body')
           "function": showFriends  //function but no parenthesis so I can pass it to button click-event
         }, {
           "button": "My followers",
-          "function": showFriends  //TO BE CHANGED
+          "function": showFollowers  
         }, {
           "button": "Account settings",
           "function": showFriends //TO BE CHANGED
@@ -141,7 +142,7 @@ baseInfo.setAttribute('class', 'card-body')
             linkBtn.textContent = item.button
             linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
             linkBtn.setAttribute('data-bs-toggle','modal')
-            linkBtn.setAttribute('data-bs-target','#userModal')
+            linkBtn.setAttribute('data-bs-target','#list-modal')
             linkBtn.addEventListener("click", item.function)
             //ADD EVENT LISTENERS!!
             listItem.appendChild(linkBtn)
@@ -160,9 +161,9 @@ profileMain.appendChild(card);
 }
 
 async function userPosts(){
-  clearDisplay(profilePosts)
+  
   try{
-
+  clearDisplay(profilePosts)
   let tokenKat = localStorage.getItem('token')
   const res = await axios.get(API_URL + 'posts/getUsersPosts', {
       headers: {
@@ -177,9 +178,9 @@ async function userPosts(){
     const card = document.createElement("div");
     card.setAttribute('class', 'card m-3 shadow')
     const styleDiv = document.createElement("div");
-    styleDiv.setAttribute('class', 'row no-gutters w-100')
+    styleDiv.setAttribute('class', 'row no-gutters w-100 mx-auto')
+    
     let picture = './assets/post_img.png'
-    // card.setAttribute('style', 'width: 18rem')
     if (post.image){
       picture = API_URL + 'uploads/posts/' + post.image
     } 
@@ -191,17 +192,37 @@ async function userPosts(){
       div.appendChild(img)
       styleDiv.appendChild(div);
 
-    styleDiv.innerHTML += `
-          <div class="card-body col-md-8">
+      styleDiv.innerHTML += `
+          <div class="card-body col-md-8 flex-wrap">
             <h5 class="card-title">${post.title}</h5>
-            <p class="card-text">${post.body}</p> 
-            <p class="small">${post.likes.length} likes</p>          
+            <p class="card-text">${post.body}</p>
+            <hr>           
           </div>`
     
+     //Likes link
+
+     const childDiv = styleDiv.querySelector(".card-body");
+     if (post.likes.length > 0) {  //If there are any likes
+      const likes = document.createElement("button")
+      likes.innerText = post.likes.length + ' likes'
+      likes.setAttribute('class', 'btn btn-link d-block btn-sm text-success')
+      likes.setAttribute('data-bs-toggle','modal')
+      likes.setAttribute('data-bs-target','#list-modal')
+      likes.addEventListener("click", function(e){ showLikers(e, post._id)})
+     
+      childDiv.appendChild(likes);
+     } else {
+      const likes = document.createElement("p")
+      likes.innerText = post.likes.length + ' likes'
+      likes.setAttribute('class', 'small text-success')
+      childDiv.appendChild(likes);
+     }
+
+     //Update button
      const updateBtn = document.createElement("button")
      updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
      updateBtn.setAttribute('data-bs-toggle','modal')
-     updateBtn.setAttribute('data-bs-target', '#modal-post')
+     updateBtn.setAttribute('data-bs-target', '#form-modal')
      updateBtn.textContent = 'Update post'
 
      updateBtn.addEventListener('click', function(e) {
@@ -215,6 +236,30 @@ async function userPosts(){
 } catch(error){
   console.error(error);
 }
+}
+
+async function updateUser(e){ 
+  e.preventDefault();
+  
+  let tokenKat = localStorage.getItem('token')
+  const formData = new FormData();
+  if (updateTitle.value.length > 0) formData.append("title", updateTitle.value);
+  if (updateImage.value.length > 0) formData.append("bio", updateBio.value)
+  if (updateImage.length != 0) formData.append("image", updateImage.files[0])
+  
+  try{
+    const res = await axios.put(API_URL + 'users/update/', formData, {
+      headers: {
+        "Authorization": tokenKat,
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    updateUserForm.reset()
+    showUser()
+
+  } catch(error){
+    console.log(error)
+  }
 }
 
 
@@ -242,11 +287,6 @@ async function createPost(e){
   } catch(error){
     console.log(error)
   }
-}
-
-
-function showUpdateForm(){
-
 }
 
 async function updatePost(e){ 
@@ -281,50 +321,106 @@ async function updatePost(e){
 
 async function showFriends(e){
   e.preventDefault();
-  usermodalTitle.innerText = 'People you follow'
-  clearDisplay(usermodalList)
-  try {
-  const result = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
-  console.log(result.data)
 
+  try {
+  listmodalTitle.innerText = 'People you follow'
+  clearDisplay(listmodalList)
+  const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
   let picture = '../assets/no_image.jpeg'
   
-  result.data.following.forEach(friend => {
+  res.data.following.forEach(person => {
     const li = document.createElement("li")
     li.setAttribute('class', 'container custom-height')
 
 
-    if (friend.image){
-      picture = API_URL + 'uploads/users/' + friend.image
+    if (person.image){
+      picture = API_URL + 'uploads/users/' + person.image
     }
-    // const imgDiv = document.createElement("div")
-    // imgDiv.setAttribute('class', 'col-4 bg bg-danger d-flex justify-content-center')
     
     const image = document.createElement('img')
     image.setAttribute('src', picture)
     image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
-    
-    
-    
-    // imgDiv.innerHTML = `<img src=${picture} class='img-fluid rounded-circle'>`
 
-    const friendLink= document.createElement('button')
-    friendLink.innerText = friend.username
-    friendLink.setAttribute('class', 'btn btn-link')
-    // friendLink.addEventListener("click", "anotherUser")  //ADD THIS FUNCTION
+    const personLink= document.createElement('button')
+    personLink.innerText = person.username
+    personLink.setAttribute('class', 'btn btn-link')
+    personLink.addEventListener("click", function(e){otherUser(e, person.username) })
    
-    // imgDiv.appendChild(friendLink)
  
     li.appendChild(image)
-    li.appendChild(friendLink)
+    li.appendChild(personLink)
 
-    usermodalList.appendChild(li)
+    listmodalList.appendChild(li)
   })
 } catch(error) {
   console.error(error)
 }
 }
 
+async function showFollowers(e){
+  e.preventDefault();
+
+  try {
+  listmodalTitle.innerText = 'People who follow you'
+  clearDisplay(listmodalList)
+  const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+
+  res.data.followers.forEach(person => {
+    const li = document.createElement("li")
+    li.setAttribute('class', 'container custom-height')
+
+    let picture = '../assets/no_image.jpeg'
+    if (person.image){
+      picture = API_URL + 'uploads/users/' + person.image
+    }
+    const image = document.createElement('img')
+    image.setAttribute('src', picture)
+    image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+    
+    const personLink= document.createElement('button')
+    personLink.innerText = person.username
+    personLink.setAttribute('class', 'btn btn-link')
+    personLink.addEventListener("click", function(e){otherUser(e, person.username) })
+
+    li.appendChild(image)
+    li.appendChild(personLink)
+
+    listmodalList.appendChild(li)
+  })
+} catch(error) {
+  console.error(error)
+}
+}
+
+
+async function showLikers(e, postId){
+  e.preventDefault();
+  console.log(postId)
+
+  try {
+  listmodalTitle.innerText = 'People who liked your post'
+  clearDisplay(listmodalList)
+  const res = await axios.get(API_URL + 'posts/getbyid/' + postId)
+  console.log(res.data)
+  res.data.likes.forEach(person => {
+    const li = document.createElement("li")
+
+       const icon = document.createElement('span')
+       icon.innerHTML = `<i class="fa-solid fa-heart-circle-plus fa-xl" style="color: #f60909;"></i>`         
+       const personLink= document.createElement('button')
+       personLink.innerText = person.username
+       personLink.setAttribute('class', 'btn btn-link text-decoration-none')
+       personLink.addEventListener("click", function(e){otherUser(e, person.username) })
+
+       li.appendChild(icon)
+       li.appendChild(personLink)
+
+    listmodalList.appendChild(li)
+  })
+} catch(error) {
+  console.error(error)
+}
+}
 
 //Counts the characters left when creating a post
 function countCharacters(){
@@ -341,10 +437,19 @@ function clearDisplay(element){
     }
   }
 
+  function showUpdateUser(e){
+    postFormUD.classList.add("hidden")
+    postForm.classList.add("hidden")
+    updateUserForm.classList.remove("hidden")
+   }
+
+
 function showForm(e){
   e.preventDefault();
   postFormUD.classList.add("hidden")
+  updateUserForm.classList.add("hidden")
   postForm.classList.remove("hidden")
+ 
 }
 
 function showFormUD(e, dataFromBtn){
@@ -366,19 +471,27 @@ function showFormUD(e, dataFromBtn){
   //global variable that can store this data temporarily
   
   postForm.classList.add("hidden")
+  updateUserForm.classList.add("hidden")
   postFormUD.classList.remove("hidden")
 }
 
- 
-showUser(); MARKER: UNCOMMENT WHEN PUSHING TO GITHUB
-userPosts(); MARKER: UNCOMMENT WHEN PUSHING TO GITHUB
+function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
+  e.preventDefault();  
+  console.log("Write function to see other user's profile")
+}
+
+showUser();
+userPosts();
 
 postForm.addEventListener("submit", createPost)
 postFormUD.addEventListener("submit", updatePost)
+updateUserForm.addEventListener("submit", updateUser)
 postbody.addEventListener("input", countCharacters)
 createPostBtn.addEventListener("click", showForm)
 
 ///////////////////////////////////////////////////////////////////PACO functions
+
+
 
 async function login(e) {
   e.preventDefault();
@@ -522,6 +635,7 @@ loginButton.addEventListener('click', login);
 signUpButton.addEventListener('click', signUp);
 redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
+// displayMainFeed();
 
 // Start from main view: must uncomment next 3 lines
 loginView.classList.add('hidden');
