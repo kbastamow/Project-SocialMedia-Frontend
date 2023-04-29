@@ -23,6 +23,12 @@ const postimageUD = document.getElementById('postimage-update')
 //count characters of post body
 let currentCount = document.getElementById("current-count")
 
+
+//modal for user card
+const usermodalTitle = document.getElementById("usermodal-title")
+const usermodalList = document.getElementById("usermodal-list")
+
+
 //variable that stores post id information to pass onto update form
 let postInfo = {
   "title": "",
@@ -57,7 +63,6 @@ async function showUser(){
     // e.preventDefault();
     const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
     const user = res.data
-    console.log(user);
  
     const card = document.createElement("div")
     card.setAttribute('class', 'card shadow w-100 mx-auto')
@@ -73,6 +78,8 @@ profilePic.setAttribute('src', picture)
 card.appendChild(profilePic)
 
 //Name, title and biography
+userInfo.id = user._id  //save userId in a variable to use in other functions - CLEAR ON LOGOUT!!!!!!!!!!!!
+
 const baseInfo = document.createElement("div")
 baseInfo.setAttribute('class', 'card-body')
 
@@ -108,14 +115,27 @@ baseInfo.setAttribute('class', 'card-body')
         const linkList = document.createElement('ul')
         linkList.setAttribute('class', 'list-group list-group-flush')
 
-        const listArray = ["People I follow", "My followers", "Account settings"]
+        const listArray = [{
+          "button": "People I follow",
+          "function": showFriends  //function but no parenthesis so I can pass it to button click-event
+        }, {
+          "button": "My followers",
+          "function": showFriends  //TO BE CHANGED
+        }, {
+          "button": "Account settings",
+          "function": showFriends //TO BE CHANGED
+        } ]   
+          
 
         listArray.forEach(item => {
             const listItem = document.createElement("li")
             listItem.setAttribute('class', 'list-group-item d-grid gap-1')
             const linkBtn = document.createElement("button")
-            linkBtn.textContent = item
+            linkBtn.textContent = item.button
             linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+            linkBtn.setAttribute('data-bs-toggle','modal')
+            linkBtn.setAttribute('data-bs-target','#userModal')
+            linkBtn.addEventListener("click", item.function)
             //ADD EVENT LISTENERS!!
             listItem.appendChild(linkBtn)
             linkList.appendChild(listItem)
@@ -137,7 +157,6 @@ async function userPosts(){
   try{
 
   let tokenKat = localStorage.getItem('token')
-  console.log("token from local storage" + tokenKat)
   const res = await axios.get(API_URL + 'posts/getUsersPosts', {
       headers: {
         "Authorization": tokenKat,
@@ -156,7 +175,6 @@ async function userPosts(){
     // card.setAttribute('style', 'width: 18rem')
     if (post.image){
       picture = API_URL + 'uploads/posts/' + post.image
-      console.log(picture);
     } 
       const div = document.createElement("div")
       div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
@@ -247,13 +265,58 @@ async function updatePost(e){
     
     
     posttitleUD.removeAttribute('value', postInfo.title);
-    console.log(postbodyUD)
     postbodyUD.textContent = ""
   } catch(error){
     console.log(error)
   }
 }
 
+
+async function showFriends(e){
+  e.preventDefault();
+  usermodalTitle.innerText = 'People you follow'
+  clearDisplay(usermodalList)
+  try {
+  const result = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+  console.log(result.data)
+
+  let picture = '../assets/no_image.jpeg'
+  
+  result.data.following.forEach(friend => {
+    const li = document.createElement("li")
+    li.setAttribute('class', 'container custom-height')
+
+
+    if (friend.image){
+      picture = API_URL + 'uploads/users/' + friend.image
+    }
+    // const imgDiv = document.createElement("div")
+    // imgDiv.setAttribute('class', 'col-4 bg bg-danger d-flex justify-content-center')
+    
+    const image = document.createElement('img')
+    image.setAttribute('src', picture)
+    image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+    
+    
+    
+    // imgDiv.innerHTML = `<img src=${picture} class='img-fluid rounded-circle'>`
+
+    const friendLink= document.createElement('button')
+    friendLink.innerText = friend.username
+    friendLink.setAttribute('class', 'btn btn-link')
+    // friendLink.addEventListener("click", "anotherUser")  //ADD THIS FUNCTION
+   
+    // imgDiv.appendChild(friendLink)
+ 
+    li.appendChild(image)
+    li.appendChild(friendLink)
+
+    usermodalList.appendChild(li)
+  })
+} catch(error) {
+  console.error(error)
+}
+}
 
 
 //Counts the characters left when creating a post
@@ -290,10 +353,8 @@ function showFormUD(e, dataFromBtn){
     body: dataFromBtn.body,
     postId: dataFromBtn.postId
   } 
-  console.log(postInfo.title)
-  console.log(postInfo.body)
+ 
   posttitleUD.setAttribute('value', postInfo.title);
-  console.log(postbodyUD)
   postbodyUD.textContent = postInfo.body
   //global variable that can store this data temporarily
   
@@ -357,7 +418,6 @@ async function signUp(e) {
       email: email,
       password: password
     });
-    console.log(response);
     if (response.status === 201) {
       alert(response.data.message);
       // Store token in LocalStorage

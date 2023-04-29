@@ -1,3 +1,11 @@
 .hidden {
   display: none;
 }
+
+/* .friendlist-img {
+  object-fit: cover;
+} */
+
+.custom-height {
+  height: 15%;
+}
