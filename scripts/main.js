@@ -218,9 +218,6 @@ async function userPosts(){
 }
 }
 
-
-
-
 async function updateUser(e){ 
   e.preventDefault();
   
@@ -292,7 +289,9 @@ async function createPost(e){
 }
 
 
+function showUpdateForm(){
 
+}
 
 async function updatePost(e){ 
   e.preventDefault();
@@ -444,7 +443,7 @@ function showFormUD(e, dataFromBtn){
     "postId": ""
   }
 
-   postInfo = {  //Set with new variables
+  postInfo = {  //Set with new variables
     title: dataFromBtn.title,
     body: dataFromBtn.body,
     postId: dataFromBtn.postId
