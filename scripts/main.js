@@ -55,7 +55,7 @@ let postInfo = {
   "postId": "",
 } 
 
-let userInfo = { id: '6445388da8130f4b9f500867' }
+let userInfo = {} //userID is saved here on login
 
 ///////////////////////////////Variables Paco
 const loginView = document.getElementById('login-view');
@@ -146,7 +146,7 @@ baseInfo.setAttribute('class', 'card-body')
           "function": showFollowers  
         }, {
           "button": "Account settings",
-          "function": showFriends //TO BE CHANGED
+          "function": accountSettings //TO BE CHANGED
         } ]   
           
 
@@ -237,7 +237,7 @@ async function userPosts(){
      if (post.commentIds.length > 0) {  //If there are any comments
       const comments = document.createElement("button")
       comments.innerText = post.commentIds.length + ' comments'
-      comments.setAttribute('class', 'btn btn-link')
+      comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
       comments.setAttribute('data-bs-toggle','modal')
       comments.setAttribute('data-bs-target','#list-modal')
       comments.addEventListener("click", function(e){ showComments(e, post.commentIds)})
@@ -246,7 +246,7 @@ async function userPosts(){
      } else {
       const comments = document.createElement("span")
       comments.innerText = 'No comments yet'
-      comments.setAttribute('class', 'ps-2')
+      comments.setAttribute('class', 'small ps-2')
       childDiv.appendChild(comments);
      }
 
@@ -369,8 +369,6 @@ async function deletePost(e) {
     console.log(error)
   }
 }
-
-
 
 async function showFriends(e){
   e.preventDefault();
@@ -576,6 +574,8 @@ function showOtherProfile(user) {
   console.log(user)
   otherUser.classList.remove('hidden')
   profile.classList.add('hidden')
+  homeBtn.removeAttribute('disabled')
+  userviewBtn.removeAttribute('disabled')
   const card = document.createElement("div")
   card.setAttribute('class', 'card shadow w-100 mx-auto')
      
@@ -633,7 +633,6 @@ function showOtherProfile(user) {
   
 function userView(e){
   e.preventDefault();
-  console.log("trying out")
   mainFeed.classList.add('hidden')
   postView.classList.add('hidden')
   userviewBtn.setAttribute("disabled","true")
@@ -655,7 +654,10 @@ function home(e){
 }
 
 
-
+function accountSettings(e){
+  e.preventDefault();
+  console.log("Write a function to show the user's account settings")
+}
 
 
 //START FROM USERVIEW - UNCOMMENT THE FOLLOWING
@@ -675,7 +677,16 @@ createPostBtn.addEventListener("click", showForm)
 deletePostBtn.addEventListener("click", showWarning)
 confirmDelete.addEventListener("click", deletePost)
 
+
+
+
+
+
 ///////////////////////////////////////////////////////////////////PACO functions
+
+
+
+
 
 
 
@@ -697,6 +708,9 @@ async function login(e) {
       // Go to mainView
       loginView.classList.add('hidden');
       mainView.classList.remove('hidden');
+      
+      userInfo.id = response.data._id  //PACO - I added this so userId can be saved in a variable while they're logged in
+
       displayMainFeed();
     } else {
       alert('Incorrect email/password. Please try again.');
