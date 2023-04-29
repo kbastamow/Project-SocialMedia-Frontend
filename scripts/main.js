@@ -53,10 +53,12 @@ const loginButton = document.getElementById('login-button');
 const signUpButton = document.getElementById('sign-up-button');
 const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
-// const forgotPasswordLink = document.getElementById('forgot-password-link');
-// const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
-// const forgotPasswordForm = document.getElementById('forgot-password-form');
-// const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
+
+//PACO: bootstrap.Modal crashes my page - not recognised???
+const forgotPasswordLink = document.getElementById('forgot-password-link');
+const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
+const forgotPasswordForm = document.getElementById('forgot-password-form');
+const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
 
 
 
