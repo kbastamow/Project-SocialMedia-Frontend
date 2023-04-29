@@ -480,8 +480,8 @@ function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
   console.log("Write function to see other user's profile")
 }
 
-showUser();
-userPosts();
+showUser(); // MARKER
+userPosts(); // MARKER
 
 postForm.addEventListener("submit", createPost)
 postFormUD.addEventListener("submit", updatePost)
@@ -634,8 +634,6 @@ async function redirectToSignUp() {
 loginButton.addEventListener('click', login);
 signUpButton.addEventListener('click', signUp);
 redirectToSignUpButton.addEventListener('click', redirectToSignUp);
-
-// displayMainFeed();
 
 // Start from main view: must uncomment next 3 lines
 loginView.classList.add('hidden');
