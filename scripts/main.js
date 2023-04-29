@@ -1,6 +1,10 @@
 ////////////////////////Variables Kat
 const API_URL = 'http://localhost:8080/'
 
+
+const userviewBtn = document.getElementById("userview-btn")
+
+
 const profile = document.getElementById('profile')
 const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
@@ -509,6 +513,15 @@ function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
   e.preventDefault();  
   console.log("Write function to see other user's profile")
 }
+
+
+function userView(e){
+  e.preventDefault();
+  console.log("trying out")
+}
+
+
+
 
 showUser(); // MARKER
 userPosts(); // MARKER
