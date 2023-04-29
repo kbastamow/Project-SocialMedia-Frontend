@@ -18,6 +18,11 @@ const posttitleUD= document.getElementById("posttitle-update");
 const postbodyUD= document.getElementById("postbody-update");
 const postimageUD = document.getElementById('postimage-update')
 const postFormUD = document.getElementById("post-form-update")
+const warningDiv = document.getElementById("warning-div")
+const deletePostBtn = document.getElementById("delete-post")
+const confirmDelete = document.getElementById("confirm-delete")
+
+
 //Update user form
 const updateBio = document.getElementById("update-bio")
 const updateTitle = document.getElementById("update-title")
@@ -317,7 +322,6 @@ async function updatePost(e){
   }
 }
 
-
 async function showFriends(e){
   e.preventDefault();
 
@@ -464,7 +468,7 @@ function showFormUD(e, dataFromBtn){
     body: dataFromBtn.body,
     postId: dataFromBtn.postId
   } 
- 
+  warningDiv.classList.add("hidden")
   posttitleUD.setAttribute('value', postInfo.title);
   postbodyUD.textContent = postInfo.body
   //global variable that can store this data temporarily
@@ -473,6 +477,32 @@ function showFormUD(e, dataFromBtn){
   updateUserForm.classList.add("hidden")
   postFormUD.classList.remove("hidden")
 }
+
+function showWarning(e){
+  e.preventDefault();
+  warningDiv.classList.remove("hidden");
+}
+
+async function deletePost(e) {
+  e.preventDefault();
+  console.log("Write delete post function")
+  console.log(postInfo.postId)
+  let tokenKat = localStorage.getItem('token')
+  try {
+    const res = await axios.delete(API_URL + 'posts/delete/' + postInfo.postId, {
+      headers: {
+        "Authorization": tokenKat,
+      }
+    })
+    console.log("post deleted")
+    warningDiv.classList.add("hidden")
+    userPosts()
+
+  }catch(error){
+    console.log(error)
+  }
+}
+
 
 function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
   e.preventDefault();  
@@ -487,6 +517,8 @@ postFormUD.addEventListener("submit", updatePost)
 updateUserForm.addEventListener("submit", updateUser)
 postbody.addEventListener("input", countCharacters)
 createPostBtn.addEventListener("click", showForm)
+deletePostBtn.addEventListener("click", showWarning)
+confirmDelete.addEventListener("click", deletePost)
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
