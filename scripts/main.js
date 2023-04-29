@@ -1,15 +1,16 @@
 ////////////////////////Variables Kat
 const API_URL = 'http://localhost:8080/'
 
-
+//PACO: Buttons for navigation
 const userviewBtn = document.getElementById("userview-btn")
+const homeBtn = document.getElementById("home-btn")
 
 
 const profile = document.getElementById('profile')
 const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
 
-//btns
+
 const createPostBtn = document.getElementById("display-create")
 
 //Create post-form
@@ -62,11 +63,11 @@ const signUpButton = document.getElementById('sign-up-button');
 const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
 
-//PACO: bootstrap.Modal crashes my page - not recognised???
-// const forgotPasswordLink = document.getElementById('forgot-password-link');
-// const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
-// const forgotPasswordForm = document.getElementById('forgot-password-form');
-// const sendButtonRecover = document.getElementById('send-button-recover');
+// PACO: bootstrap.Modal crashes my page - not recognised???
+const forgotPasswordLink = document.getElementById('forgot-password-link');
+const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
+const forgotPasswordForm = document.getElementById('forgot-password-form');
+const sendButtonRecover = document.getElementById('send-button-recover');
 
 
 
@@ -518,14 +519,31 @@ function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
 function userView(e){
   e.preventDefault();
   console.log("trying out")
+  mainFeed.classList.add('hidden')
+  postView.classList.add('hidden')
+  userviewBtn.setAttribute("disabled","true")
+  homeBtn.removeAttribute("disabled")
+  profile.classList.remove('hidden')
+
+  showUser(); // MARKER
+  userPosts(); // MARKER
+
+}
+
+function home(e){
+  e.preventDefault();
+  profile.classList.add('hidden')
+  homeBtn.setAttribute("disabled","true")
+  userviewBtn.removeAttribute("disabled")
+  mainFeed.classList.remove('hidden');
+  displayMainFeed();  //PACO: THIS DOESNT WORK
 }
 
 
-
-
-showUser(); // MARKER
-userPosts(); // MARKER
-
+// showUser(); // MARKER
+// userPosts(); // MARKER
+userviewBtn.addEventListener("click", userView)
+homeBtn.addEventListener("click", home)
 postForm.addEventListener("submit", createPost)
 postFormUD.addEventListener("submit", updatePost)
 updateUserForm.addEventListener("submit", updateUser)
@@ -681,6 +699,6 @@ signUpButton.addEventListener('click', signUp);
 redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
 // Start from main view: must uncomment next 3 lines
-loginView.classList.add('hidden');
-mainView.classList.remove('hidden');
-displayMainFeed();
+// loginView.classList.add('hidden');
+// mainView.classList.remove('hidden');
+// displayMainFeed();
