@@ -5,8 +5,7 @@ const profile = document.getElementById('profile')
 const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
 
-const postForm = document.getElementById("post-form")
-const postFormUD = document.getElementById("post-form-update")
+
 //btns
 const createPostBtn = document.getElementById("display-create")
 
@@ -14,11 +13,17 @@ const createPostBtn = document.getElementById("display-create")
 const posttitle= document.getElementById("posttitle");
 const postbody= document.getElementById("postbody");
 const postimage = document.getElementById('postimage')
-
+const postForm = document.getElementById("post-form")
 //Update post-form
 const posttitleUD= document.getElementById("posttitle-update");
 const postbodyUD= document.getElementById("postbody-update");
 const postimageUD = document.getElementById('postimage-update')
+const postFormUD = document.getElementById("post-form-update")
+//Update user form
+const updateBio = document.getElementById("update-bio")
+const updateTitle = document.getElementById("update-title")
+const updateImage = document.getElementById("update-image")
+const updateUserForm = document.getElementById("update-user")
 
 //count characters of post body
 let currentCount = document.getElementById("current-count")
@@ -67,6 +72,7 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMz
 async function showUser(){
   
   try{
+    clearDisplay(profileMain)
     // e.preventDefault();
     const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
     const user = res.data
@@ -98,14 +104,7 @@ baseInfo.setAttribute('class', 'card-body')
             baseInfo.innerHTML += userTitle
         }
 
-        const addTitleBtn = document.createElement("button")
-        addTitleBtn.textContent = 'Add or update title'
-        addTitleBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
-        // addTitleBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
-        baseInfo.appendChild(addTitleBtn)
-
-
-        const userBio= `<p class="card-text">You have not added information about yourself</p>`
+        let userBio= `<p class="card-text">You have not added information about yourself</p>`
         if (user.bio){
             userBio = `<p class="card-text">${user.bio}</p>`   
         }
@@ -113,9 +112,11 @@ baseInfo.setAttribute('class', 'card-body')
         baseInfo.innerHTML += userBio
 
         const addBioBtn = document.createElement("button")
-        addBioBtn.textContent = 'Add or update bio'
+        addBioBtn.textContent = 'Add/modify public profile'
         addBioBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
-        // addBioeBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
+        addBioBtn.setAttribute('data-bs-toggle','modal')
+        addBioBtn.setAttribute('data-bs-target','#modal-post')
+        addBioBtn.addEventListener('click', showUpdateUser )
         baseInfo.appendChild(addBioBtn)
 
 //Add the three links
@@ -160,9 +161,9 @@ profileMain.appendChild(card);
 }
 
 async function userPosts(){
-  clearDisplay(profilePosts)
+  
   try{
-
+  clearDisplay(profilePosts)
   let tokenKat = localStorage.getItem('token')
   const res = await axios.get(API_URL + 'posts/getUsersPosts', {
       headers: {
@@ -218,6 +219,52 @@ async function userPosts(){
 }
 
 
+
+
+async function updateUser(e){ 
+  e.preventDefault();
+  
+  let tokenKat = localStorage.getItem('token')
+  const formData = new FormData();
+  if (updateTitle.value.length > 0) formData.append("title", updateTitle.value);
+  if (updateImage.value.length > 0) formData.append("bio", updateBio.value)
+  if (updateImage.length != 0) formData.append("image", updateImage.files[0])
+  
+  try{
+    const res = await axios.put(API_URL + 'users/update/', formData, {
+      headers: {
+        "Authorization": tokenKat,
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    updateUserForm.reset()
+    showUser()
+
+  } catch(error){
+    console.log(error)
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function createPost(e){ 
   e.preventDefault();
 
@@ -245,9 +292,7 @@ async function createPost(e){
 }
 
 
-function showUpdateForm(){
 
-}
 
 async function updatePost(e){ 
   e.preventDefault();
@@ -281,13 +326,14 @@ async function updatePost(e){
 
 async function showFriends(e){
   e.preventDefault();
+
+  try {
   usermodalTitle.innerText = 'People you follow'
   clearDisplay(usermodalList)
-  try {
-  const result = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+  const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
   let picture = '../assets/no_image.jpeg'
   
-  result.data.following.forEach(person => {
+  res.data.following.forEach(person => {
     const li = document.createElement("li")
     li.setAttribute('class', 'container custom-height')
 
@@ -318,14 +364,15 @@ async function showFriends(e){
 
 async function showFollowers(e){
   e.preventDefault();
+
+  try {
   usermodalTitle.innerText = 'People who follow you'
   clearDisplay(usermodalList)
-  try {
-  const result = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+  const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
 
   
   
-  result.data.followers.forEach(person => {
+  res.data.followers.forEach(person => {
     const li = document.createElement("li")
     li.setAttribute('class', 'container custom-height')
 
@@ -372,10 +419,21 @@ function clearDisplay(element){
     }
   }
 
+
+  function showUpdateUser(e){
+    postFormUD.classList.add("hidden")
+    postForm.classList.add("hidden")
+    updateUserForm.classList.remove("hidden")
+   }
+
+
+
 function showForm(e){
   e.preventDefault();
   postFormUD.classList.add("hidden")
+  updateUserForm.classList.add("hidden")
   postForm.classList.remove("hidden")
+ 
 }
 
 function showFormUD(e, dataFromBtn){
@@ -386,7 +444,7 @@ function showFormUD(e, dataFromBtn){
     "postId": ""
   }
 
-  postInfo = {  //Set with new variables
+   postInfo = {  //Set with new variables
     title: dataFromBtn.title,
     body: dataFromBtn.body,
     postId: dataFromBtn.postId
@@ -397,6 +455,7 @@ function showFormUD(e, dataFromBtn){
   //global variable that can store this data temporarily
   
   postForm.classList.add("hidden")
+  updateUserForm.classList.add("hidden")
   postFormUD.classList.remove("hidden")
 }
 
@@ -412,6 +471,7 @@ userPosts();
 
 postForm.addEventListener("submit", createPost)
 postFormUD.addEventListener("submit", updatePost)
+updateUserForm.addEventListener("submit", updateUser)
 postbody.addEventListener("input", countCharacters)
 createPostBtn.addEventListener("click", showForm)
 

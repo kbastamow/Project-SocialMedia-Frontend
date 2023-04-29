@@ -93,17 +93,17 @@
         <div class="modal-dialog d-flex justify-content-center">
             <div class="modal-content w-75">
                 <div class="modal-header">
-                    <h5 class="modal-title">New post!</h5>
+                    <h5 class="modal-title">Complete the fields</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4">
 
-<!-- FORM STARTS HERE -->
+<!--CREATE POST FORM STARTS HERE -->
                     <form id="post-form" enctype="multipart/form-data" method="post">
                         <!-- Title -->
                         <div class="form-outline mb-4">
                             <label class="form-label" for="posttitle">Post Title</label>
-                            <input type="text" id="posttitle" class="form-control" required />
+                            <input type="text" id="posttitle" class="form-control" required  maxlength="30"/>
                             
                         </div>
     
@@ -120,7 +120,7 @@
                          <!-- Upload an image -->
                          <div class="form-outline mb-4">
                             <label class="form-label" for="postImage">Upload an image</label>
-                            <input type="file" id="postimage" name="filename">
+                            <input type="file" id="postimage" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
                         </div>
     
     
@@ -136,7 +136,7 @@
   <!-- Title -->
   <div class="form-outline mb-4">
       <label class="form-label" for="posttitle-update">Post Title</label>
-      <input type="text" id="posttitle-update" class="form-control" />
+      <input type="text" id="posttitle-update" class="form-control"  maxlength="30" />
       
   </div>
 
@@ -153,13 +153,48 @@
    <!-- Upload an image -->
    <div class="form-outline mb-4">
       <label class="form-label" for="postimage-update">Upload a different image</label>
-      <input type="file" id="postimage-update" name="filename">
+      <input type="file" id="postimage-update" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
   </div>
   
   <!-- Submit button -->
   <button type="submit" class="btn btn-success btn-block col-12 mx-auto" data-bs-dismiss="modal" aria-label="Close">Update Post</button>
 </form>
 <!-- UPDATE POST FORM ENDS HERE -->
+
+<!-- UPDATE USER INFO STARTS HERE -->
+<form id="update-user" enctype="multipart/form-data" method="put">
+  <!-- Title -->
+  <div class="form-outline mb-4">
+      <label class="form-label" for="update-title">Title</label>
+      <input type="text" id="update-title" class="form-control" placeholder="e.g. Lifestyle traveller, Digital nomad"  maxlength="30"/>
+      
+  </div>
+
+ 
+  <!-- Body -->
+  <div class="form-outline mb-4">
+      <label class="form-label" for="update-bio">Short biography</label>
+      <textarea id="update-bio" rows="4" class="form-control" maxlength="200" placeholder="Tell others something about yourself"></textarea>
+      
+  </div>
+  
+  <!-- Upload an image -->
+  <div class="form-outline mb-4">
+    <label class="form-label" for="update-image">Upload a profile picture</label>
+    <input type="file" id="update-image" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
+</div>
+
+
+  <!-- Submit button -->
+  <button type="submit" class="btn btn-success btn-block col-12 mx-auto" data-bs-dismiss="modal" aria-label="Close">Save changes</button>
+</form>
+<!-- UPDATE POST FORM ENDS HERE -->
+
+
+
+
+
+
 
 
 
