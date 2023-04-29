@@ -417,7 +417,7 @@ createPostBtn.addEventListener("click", showForm)
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
-/*
+
 
 async function login(e) {
   e.preventDefault();
@@ -575,4 +575,3 @@ redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
 // displayMainFeed();
 
-*/
