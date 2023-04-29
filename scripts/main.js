@@ -6,6 +6,35 @@ const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
 
 const postForm = document.getElementById("post-form")
+const postFormUD = document.getElementById("post-form-update")
+//btns
+const createPostBtn = document.getElementById("display-create")
+
+//Create post-form
+const posttitle= document.getElementById("posttitle");
+const postbody= document.getElementById("postbody");
+const postimage = document.getElementById('postimage')
+
+//Update post-form
+const posttitleUD= document.getElementById("posttitle-update");
+const postbodyUD= document.getElementById("postbody-update");
+const postimageUD = document.getElementById('postimage-update')
+
+//count characters of post body
+let currentCount = document.getElementById("current-count")
+
+
+//modal for user card
+const usermodalTitle = document.getElementById("usermodal-title")
+const usermodalList = document.getElementById("usermodal-list")
+
+
+//variable that stores post id information to pass onto update form
+let postInfo = {
+  "title": "",
+  "body": "",
+  "postId": "",
+} 
 
 let userInfo = { id: '6445388da8130f4b9f500867' }
 
@@ -31,7 +60,7 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMz
 
 ///////////////////////////////////////////////////////////////KAT functions
 
-/*
+
 
 //Axios get user info
 
@@ -41,33 +70,89 @@ async function showUser(){
     // e.preventDefault();
     const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
     const user = res.data
-    console.log(user);
+ 
+    const card = document.createElement("div")
+    card.setAttribute('class', 'card shadow w-100 mx-auto')
+    // card.setAttribute('style', 'width: 25rem')
+   
     let picture = '../assets/no_image.jpeg'
     if (user.image){
       picture = API_URL + 'uploads/users/' + user.image
     }
+const profilePic = document.createElement("img")
+profilePic.setAttribute('class', 'card-img-top')
+profilePic.setAttribute('src', picture)
+card.appendChild(profilePic)
 
-    const card = document.createElement("div")
-    card.setAttribute('class', 'card')
-    card.setAttribute('style', 'width: 25rem')
-    card.innerHTML =  `
-                    <img src=${picture} class="card-img-top" alt="Profile picture">
-                    <div class="card-body">
-                      <h5 class="card-title">${user.username}</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item">An item</li>
-                      <li class="list-group-item">A second item</li>
-                      <li class="list-group-item">A third item</li>
-                    </ul>
-                    <div class="card-body">
-                      <a href="#" class="card-link">Update your info</a>
-                      <a href="#" class="card-link">Reset password</a>
-                    </div>
-                  </div>`
+//Name, title and biography
+userInfo.id = user._id  //save userId in a variable to use in other functions - CLEAR ON LOGOUT!!!!!!!!!!!!
 
-   profileMain.appendChild(card);
+const baseInfo = document.createElement("div")
+baseInfo.setAttribute('class', 'card-body')
+
+        const userName = `<h5 class="card-title">${user.username}</h5>`
+        baseInfo.innerHTML = userName
+
+        if (user.title){
+            const userTitle = `<p class="text-primary">${user.title}</p>`
+            baseInfo.innerHTML += userTitle
+        }
+
+        const addTitleBtn = document.createElement("button")
+        addTitleBtn.textContent = 'Add or update title'
+        addTitleBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
+        // addTitleBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
+        baseInfo.appendChild(addTitleBtn)
+
+
+        const userBio= `<p class="card-text">You have not added information about yourself</p>`
+        if (user.bio){
+            userBio = `<p class="card-text">${user.bio}</p>`   
+        }
+
+        baseInfo.innerHTML += userBio
+
+        const addBioBtn = document.createElement("button")
+        addBioBtn.textContent = 'Add or update bio'
+        addBioBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
+        // addBioeBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
+        baseInfo.appendChild(addBioBtn)
+
+//Add the three links
+        const linkList = document.createElement('ul')
+        linkList.setAttribute('class', 'list-group list-group-flush')
+
+        const listArray = [{
+          "button": "People I follow",
+          "function": showFriends  //function but no parenthesis so I can pass it to button click-event
+        }, {
+          "button": "My followers",
+          "function": showFriends  //TO BE CHANGED
+        }, {
+          "button": "Account settings",
+          "function": showFriends //TO BE CHANGED
+        } ]   
+          
+
+        listArray.forEach(item => {
+            const listItem = document.createElement("li")
+            listItem.setAttribute('class', 'list-group-item d-grid gap-1')
+            const linkBtn = document.createElement("button")
+            linkBtn.textContent = item.button
+            linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+            linkBtn.setAttribute('data-bs-toggle','modal')
+            linkBtn.setAttribute('data-bs-target','#userModal')
+            linkBtn.addEventListener("click", item.function)
+            //ADD EVENT LISTENERS!!
+            listItem.appendChild(linkBtn)
+            linkList.appendChild(listItem)
+    })
+
+baseInfo.appendChild(linkList)
+card.appendChild(baseInfo)
+
+
+profileMain.appendChild(card);
 
    }catch(error){
     console.error(error);
@@ -78,7 +163,7 @@ async function userPosts(){
   clearDisplay(profilePosts)
   try{
 
-  let tokenKat = " " //Change this when token is in local storage!!!!!!
+  let tokenKat = localStorage.getItem('token')
   const res = await axios.get(API_URL + 'posts/getUsersPosts', {
       headers: {
         "Authorization": tokenKat,
@@ -89,24 +174,42 @@ async function userPosts(){
   console.log(posts);
   posts.posts.forEach(post => {
 
-    
     const card = document.createElement("div");
-    card.setAttribute('class', 'card m-3')
-    card.setAttribute('style', 'width: 18rem')
+    card.setAttribute('class', 'card m-3 shadow')
+    const styleDiv = document.createElement("div");
+    styleDiv.setAttribute('class', 'row no-gutters w-100')
+    let picture = './assets/post_img.png'
+    // card.setAttribute('style', 'width: 18rem')
     if (post.image){
-      const picture = API_URL + 'uploads/posts/' + post.image
-      console.log(picture);
+      picture = API_URL + 'uploads/posts/' + post.image
+    } 
+      const div = document.createElement("div")
+      div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
       const img = document.createElement('img');
-      img.setAttribute('class', 'card-img-top')
+      img.setAttribute('class', 'img-fluid px-1')
       img.setAttribute('src', picture)
-      card.appendChild(img);
-    }
-    card.innerHTML += `
-          <div class="card-body">
+      div.appendChild(img)
+      styleDiv.appendChild(div);
+
+    styleDiv.innerHTML += `
+          <div class="card-body col-md-8">
             <h5 class="card-title">${post.title}</h5>
-            <p class="card-text">${post.body}</p>
-           <a href="#" class="btn btn-primary">Go somewhere</a>
-         </div>`
+            <p class="card-text">${post.body}</p> 
+            <p class="small">${post.likes.length} likes</p>          
+          </div>`
+    
+     const updateBtn = document.createElement("button")
+     updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
+     updateBtn.setAttribute('data-bs-toggle','modal')
+     updateBtn.setAttribute('data-bs-target', '#modal-post')
+     updateBtn.textContent = 'Update post'
+
+     updateBtn.addEventListener('click', function(e) {
+      showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
+     styleDiv.querySelector(".card-body").appendChild(updateBtn)
+
+
+    card.appendChild(styleDiv);
     profilePosts.appendChild(card) 
   });
 } catch(error){
@@ -114,16 +217,13 @@ async function userPosts(){
 }
 }
 
-//THIS DOES NOT WORK UNTIL WE HAVE LOGIN IN PLACE as I need req.user._id value!!!
+
 async function createPost(e){ 
   e.preventDefault();
 
-  let tokenKat = " " //Change this when token is in local storage!!!!!!
+  let tokenKat = localStorage.getItem('token')
 
-
-  const posttitle= document.getElementById("posttitle");
-  const postbody= document.getElementById("postbody");
-  const postimage = document.getElementById('postimage')
+  
   const formData = new FormData();
   formData.append("title", posttitle.value);
   formData.append("body", postbody.value)
@@ -134,7 +234,6 @@ async function createPost(e){
     const res = await axios.post(API_URL + 'posts/create', formData, {
       headers: {
         "Authorization": tokenKat,
-        "userId": userInfo.id,  //Replace this when login is in place!!
         "Content-Type": "multipart/form-data"
       }
     })
@@ -146,15 +245,138 @@ async function createPost(e){
 }
 
 
+function showUpdateForm(){
+
+}
+
+async function updatePost(e){ 
+  e.preventDefault();
+  
+  let tokenKat = localStorage.getItem('token')
+  const formData = new FormData();
+  formData.append("title", posttitleUD.value);
+  formData.append("body", postbodyUD.value)
+  if (postimageUD.length != 0) formData.append("image", postimageUD.files[0])
+  
+  
+  //in the following, postId is a global variable where I've temporarily stored post's id when it's update button is clicked
+  try{
+    const res = await axios.put(API_URL + 'posts/update/' + postInfo.postId, formData, {
+      headers: {
+        "Authorization": tokenKat,
+        "Content-Type": "multipart/form-data"
+      }
+    })
+    console.log(res.data)
+    userPosts()
+    
+    
+    posttitleUD.removeAttribute('value', postInfo.title);
+    postbodyUD.textContent = ""
+  } catch(error){
+    console.log(error)
+  }
+}
+
+
+async function showFriends(e){
+  e.preventDefault();
+  usermodalTitle.innerText = 'People you follow'
+  clearDisplay(usermodalList)
+  try {
+  const result = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+  console.log(result.data)
+
+  let picture = '../assets/no_image.jpeg'
+  
+  result.data.following.forEach(friend => {
+    const li = document.createElement("li")
+    li.setAttribute('class', 'container custom-height')
+
+
+    if (friend.image){
+      picture = API_URL + 'uploads/users/' + friend.image
+    }
+    // const imgDiv = document.createElement("div")
+    // imgDiv.setAttribute('class', 'col-4 bg bg-danger d-flex justify-content-center')
+    
+    const image = document.createElement('img')
+    image.setAttribute('src', picture)
+    image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+    
+    
+    
+    // imgDiv.innerHTML = `<img src=${picture} class='img-fluid rounded-circle'>`
+
+    const friendLink= document.createElement('button')
+    friendLink.innerText = friend.username
+    friendLink.setAttribute('class', 'btn btn-link')
+    // friendLink.addEventListener("click", "anotherUser")  //ADD THIS FUNCTION
+   
+    // imgDiv.appendChild(friendLink)
+ 
+    li.appendChild(image)
+    li.appendChild(friendLink)
+
+    usermodalList.appendChild(li)
+  })
+} catch(error) {
+  console.error(error)
+}
+}
+
+
+//Counts the characters left when creating a post
+function countCharacters(){
+let enteredText = postbody.value.length;
+let whatsLeft = 700 - enteredText;
+currentCount.innerText = whatsLeft + "/700";
+};
+
+
+
 function clearDisplay(element){
  while (element.firstChild){
     element.removeChild(element.firstChild);
     }
   }
+
+function showForm(e){
+  e.preventDefault();
+  postFormUD.classList.add("hidden")
+  postForm.classList.remove("hidden")
+}
+
+function showFormUD(e, dataFromBtn){
+  e.preventDefault();
+  postInfo = {  //Clear global variable in case there is old data left
+    "title":"",
+    "body": "",
+    "postId": ""
+  }
+
+  postInfo = {  //Set with new variables
+    title: dataFromBtn.title,
+    body: dataFromBtn.body,
+    postId: dataFromBtn.postId
+  } 
+ 
+  posttitleUD.setAttribute('value', postInfo.title);
+  postbodyUD.textContent = postInfo.body
+  //global variable that can store this data temporarily
+  
+  postForm.classList.add("hidden")
+  postFormUD.classList.remove("hidden")
+}
+
  
 showUser();
 userPosts();
-*/
+
+postForm.addEventListener("submit", createPost)
+postFormUD.addEventListener("submit", updatePost)
+postbody.addEventListener("input", countCharacters)
+createPostBtn.addEventListener("click", showForm)
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
@@ -203,7 +425,6 @@ async function signUp(e) {
       email: email,
       password: password
     });
-    console.log(response);
     if (response.status === 201) {
       alert(response.data.message);
       // Store token in LocalStorage

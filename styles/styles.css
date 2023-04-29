@@ -2,6 +2,14 @@
   display: none;
 }
 
+/* .friendlist-img {
+  object-fit: cover;
+} */
+
+.custom-height {
+  height: 15%;
+}
+
 .vertical-line {
   border-left: 1px solid #ccc;
   height: 100%;
