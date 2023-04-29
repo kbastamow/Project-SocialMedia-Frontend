@@ -22,7 +22,9 @@
 
         <div id="profile-side" class="d-flex flex-column align-content-center">
           <div class="row justify-content-center">
-            <button type="button" class="btn btn-primary col-10 m-4" data-bs-toggle="modal" data-bs-target="#new-post">Post something</button>
+            <div class="row justify-content-center">
+              <button id="display-create" type="button" class="btn btn-primary col-10 m-4" data-bs-toggle="modal" data-bs-target="#modal-post">Post something</button>
+            </div>
           </div>
 
 
@@ -87,7 +89,7 @@
     <div id="users"> </div> <!--K-->
 
       <!--MODAL TO CREATE POST!-->
-      <div class="modal" id="new-post" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+      <div class="modal" id="modal-post" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
         <div class="modal-dialog d-flex justify-content-center">
             <div class="modal-content w-75">
                 <div class="modal-header">
@@ -128,11 +130,51 @@
                         <!-- Submit button -->
                         <button type="submit" class="btn btn-primary btn-block col-12 mx-auto">Post</button>
                     </form>
+
+<!-- UPDATE POST FORM STARTS HERE -->
+<form id="post-form-update" enctype="multipart/form-data" method="put">
+  <!-- Title -->
+  <div class="form-outline mb-4">
+      <label class="form-label" for="posttitle-update">Post Title</label>
+      <input type="text" id="posttitle-update" class="form-control" />
+      
+  </div>
+
+ 
+  <!-- Body -->
+  <div class="form-outline mb-4">
+      <label class="form-label" for="postbody-update">Post text</label>
+      <textarea id="postbody-update" rows="4" class="form-control" maxlength="700"></textarea>
+      
+    
+    
+  </div>
+
+   <!-- Upload an image -->
+   <div class="form-outline mb-4">
+      <label class="form-label" for="postimage-update">Upload a different image</label>
+      <input type="file" id="postimage-update" name="filename">
+  </div>
+  
+  <!-- Submit button -->
+  <button type="submit" class="btn btn-success btn-block col-12 mx-auto" data-dismiss="modal">Update Post</button>
+</form>
+<!-- UPDATE POST FORM ENDS HERE -->
+
+
+
                 </div>
             </div>
         </div>
     </div>
     <!-- Modal -->
+
+
+
+
+
+
+
 
 
 
@@ -168,9 +210,8 @@
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="./scripts/main.js"></script>
 
