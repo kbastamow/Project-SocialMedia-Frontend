@@ -51,7 +51,7 @@ const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 const forgotPasswordLink = document.getElementById('forgot-password-link');
 const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
 const forgotPasswordForm = document.getElementById('forgot-password-form');
-const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
+const sendButtonRecover = document.getElementById('send-button-recover');
 
 
 
@@ -370,8 +370,8 @@ function showFormUD(e, dataFromBtn){
 }
 
  
-showUser();
-userPosts();
+showUser(); MARKER: UNCOMMENT WHEN PUSHING TO GITHUB
+userPosts(); MARKER: UNCOMMENT WHEN PUSHING TO GITHUB
 
 postForm.addEventListener("submit", createPost)
 postFormUD.addEventListener("submit", updatePost)
@@ -449,13 +449,14 @@ forgotPasswordLink.addEventListener('click', (event) => {
 });
 
 
-sendButtonRecover.addEventListener('submit', async (e) => {
+sendButtonRecover.addEventListener('click', async (e) => {
   e.preventDefault();
-  const emailInput = forgotPasswordForm.querySelector('#email-input');
+  const emailInput = forgotPasswordForm.querySelector('#email-input-recover');
   const email = emailInput.value;
+  console.log(email);
   try {
-    const response = await axios.post(API_URL + '/recoverPassword/' + email);
-    if (response.data.success) {
+    const response = await axios.get(API_URL + 'users/recoverPassword/' + email);
+    if (response.status === 200) {
       alert('Confirmation email sent!');
       const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
       forgotPasswordModal.hide();
@@ -480,46 +481,33 @@ async function displayMainFeed() {
     friendsPosts = response.data.posts;
 
     friendsPosts.forEach(post => {
-      const col = document.createElement('div')
-      const card = document.createElement('div')
-      const img = document.createElement('img')
-      const cardBody = document.createElement('div')
-      const cardTitle = document.createElement('h5')
-      const cardMessage = document.createElement('p')
-      const form = document.createElement('form')
-      const input = document.createElement('input')
-      const button = document.createElement('button')
-
-      // Set classes and attributes
-      col.className = 'col'
-      card.className = 'card'
-      img.className = 'card-img-top'
-      cardBody.className = 'card-body'
-      cardTitle.className = 'card-title'
-      input.className = 'form-control'
-      button.className = 'btn btn-primary'
-
-      // img.src = post.image
-      img.setAttribute('src', 'http://localhost:8080/uploads/users/' + post.image)
-      cardTitle.textContent = post.title
-      cardMessage.textContent = post.body
-      input.placeholder = 'Write a comment...'
-      button.href = '#'
-      button.textContent = 'Comment'
-
-      // Append elements
-      cardBody.appendChild(cardTitle)
-      cardBody.appendChild(cardMessage)
-      cardBody.appendChild(input)
-      cardBody.appendChild(button)
-      card.appendChild(img)
-      card.appendChild(cardBody)
-      col.appendChild(card)
-      mainFeed.appendChild(col)
-    })
-
-
-    console.log(friendsPosts);        
+      const card = document.createElement("div");
+      card.setAttribute('class', 'card m-3 shadow')
+      const styleDiv = document.createElement("div");
+      styleDiv.setAttribute('class', 'row no-gutters w-100')
+      let picture = './assets/post_img.png'
+      // card.setAttribute('style', 'width: 18rem')
+      if (post.image){
+        picture = API_URL + 'uploads/posts/' + post.image
+      } 
+      const div = document.createElement("div")
+      div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
+      const img = document.createElement('img');
+      img.setAttribute('class', 'img-fluid px-1')
+      img.setAttribute('src', picture)
+      div.appendChild(img)
+      styleDiv.appendChild(div);
+    
+      styleDiv.innerHTML += `
+            <div class="card-body col-md-8">
+              <h5 class="card-title">${post.title}</h5>
+              <p class="card-text">${post.body}</p> 
+              <p class="small">${post.likes.length} likes</p>          
+            </div>`
+      
+      card.appendChild(styleDiv);
+      mainFeed.appendChild(card)
+    });
   } catch (error) {
     console.error(error);
   }
@@ -534,5 +522,8 @@ loginButton.addEventListener('click', login);
 signUpButton.addEventListener('click', signUp);
 redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
-// displayMainFeed();
 
+// Start from main view: must uncomment next 3 lines
+loginView.classList.add('hidden');
+mainView.classList.remove('hidden');
+displayMainFeed();
