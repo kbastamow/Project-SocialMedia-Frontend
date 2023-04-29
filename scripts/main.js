@@ -54,10 +54,10 @@ const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
 
 //PACO: bootstrap.Modal crashes my page - not recognised???
-const forgotPasswordLink = document.getElementById('forgot-password-link');
-const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
-const forgotPasswordForm = document.getElementById('forgot-password-form');
-const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
+// const forgotPasswordLink = document.getElementById('forgot-password-link');
+// const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
+// const forgotPasswordForm = document.getElementById('forgot-password-form');
+// const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
 
 
 
@@ -111,13 +111,13 @@ baseInfo.setAttribute('class', 'card-body')
 
         baseInfo.innerHTML += userBio
 
-        const addBioBtn = document.createElement("button")
-        addBioBtn.textContent = 'Add/modify public profile'
-        addBioBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
-        addBioBtn.setAttribute('data-bs-toggle','modal')
-        addBioBtn.setAttribute('data-bs-target','#form-modal')
-        addBioBtn.addEventListener('click', showUpdateUser )
-        baseInfo.appendChild(addBioBtn)
+        const addUpdateBtn = document.createElement("button")
+        addUpdateBtn.textContent = 'Add/modify public profile'
+        addUpdateBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
+        addUpdateBtn.setAttribute('data-bs-toggle','modal')
+        addUpdateBtn.setAttribute('data-bs-target','#form-modal')
+        addUpdateBtn.addEventListener('click', showUpdateUser )
+        baseInfo.appendChild(addUpdateBtn)
 
 //Add the three links
         const linkList = document.createElement('ul')
@@ -244,7 +244,7 @@ async function updateUser(e){
   let tokenKat = localStorage.getItem('token')
   const formData = new FormData();
   if (updateTitle.value.length > 0) formData.append("title", updateTitle.value);
-  if (updateImage.value.length > 0) formData.append("bio", updateBio.value)
+  if (updateBio.value.length > 0) formData.append("bio", updateBio.value)
   if (updateImage.length != 0) formData.append("image", updateImage.files[0])
   
   try{
@@ -297,8 +297,7 @@ async function updatePost(e){
   formData.append("title", posttitleUD.value);
   formData.append("body", postbodyUD.value)
   if (postimageUD.length != 0) formData.append("image", postimageUD.files[0])
-  
-  
+
   //in the following, postId is a global variable where I've temporarily stored post's id when it's update button is clicked
   try{
     const res = await axios.put(API_URL + 'posts/update/' + postInfo.postId, formData, {
