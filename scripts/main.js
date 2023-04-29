@@ -659,10 +659,10 @@ function home(e){
 
 
 //START FROM USERVIEW - UNCOMMENT THE FOLLOWING
-loginView.classList.add('hidden');
-profile.classList.remove('hidden')
-showUser(); // MARKER
-userPosts(); // MARKER
+// loginView.classList.add('hidden');
+// profile.classList.remove('hidden')
+// showUser(); 
+// userPosts(); 
 
 
 userviewBtn.addEventListener("click", userView)
