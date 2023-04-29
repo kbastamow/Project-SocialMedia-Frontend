@@ -58,33 +58,74 @@ async function showUser(){
     const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
     const user = res.data
     console.log(user);
+ 
+    const card = document.createElement("div")
+    card.setAttribute('class', 'card')
+    card.setAttribute('style', 'width: 25rem')
+   
     let picture = '../assets/no_image.jpeg'
     if (user.image){
       picture = API_URL + 'uploads/users/' + user.image
     }
+const profilePic = document.createElement("img")
+profilePic.setAttribute('class', 'card-img-top')
+profilePic.setAttribute('src', picture)
+card.appendChild(profilePic)
 
-    const card = document.createElement("div")
-    card.setAttribute('class', 'card')
-    card.setAttribute('style', 'width: 25rem')
-    card.innerHTML =  `
-                    <img src=${picture} class="card-img-top" alt="Profile picture">
-                    <div class="card-body">
-                      <h5 class="card-title">${user.username}</h5>
-                      <p class="text-primary">${user.title}</p>
-                      <p class="card-text">${user.bio}</p>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                      <li class="list-group-item">People I follow</li>
-                      <li class="list-group-item">A second item</li>
-                      <li class="list-group-item">A third item</li>
-                    </ul>
-                    <div class="card-body">
-                      <a href="#" class="card-link">Update your info</a>
-                      <a href="#" class="card-link">Reset password</a>
-                    </div>
-                  </div>`
+//Name, title and biography
+const baseInfo = document.createElement("div")
+baseInfo.setAttribute('class', 'card-body')
 
-   profileMain.appendChild(card);
+        const userName = `<h5 class="card-title">${user.username}</h5>`
+        baseInfo.innerHTML = userName
+
+        if (user.title){
+            const userTitle = `<p class="text-primary">${user.title}</p>`
+            baseInfo.innerHTML += userTitle
+        }
+
+        const addTitleBtn = document.createElement("button")
+        addTitleBtn.textContent = 'Add or update title'
+        addTitleBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
+        // addTitleBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
+        baseInfo.appendChild(addTitleBtn)
+
+
+        const userBio= `<p class="card-text">You have not added information about yourself</p>`
+        if (user.bio){
+            userBio = `<p class="card-text">${user.bio}</p>`   
+        }
+
+        baseInfo.innerHTML += userBio
+
+        const addBioBtn = document.createElement("button")
+        addBioBtn.textContent = 'Add or update bio'
+        addBioBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
+        // addBioeBtn.addEventListener('click', )  ADD FUNCTION TO UPDATE TITLE
+        baseInfo.appendChild(addBioBtn)
+
+//Add the three links
+        const linkList = document.createElement('ul')
+        linkList.setAttribute('class', 'list-group list-group-flush')
+
+        const listArray = ["People I follow", "My followers", "Account settings"]
+
+        listArray.forEach(item => {
+        const listItem = document.createElement("li")
+        listItem.setAttribute('class', 'list-group-item d-grid gap-1')
+        const linkBtn = document.createElement("button")
+        linkBtn.textContent = item
+        linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+        //ADD EVENT LISTENERS!!
+        listItem.appendChild(linkBtn)
+        linkList.appendChild(listItem)
+    })
+
+baseInfo.appendChild(linkList)
+card.appendChild(baseInfo)
+
+
+profileMain.appendChild(card);
 
    }catch(error){
     console.error(error);
