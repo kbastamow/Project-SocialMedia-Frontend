@@ -60,8 +60,8 @@ async function showUser(){
     console.log(user);
  
     const card = document.createElement("div")
-    card.setAttribute('class', 'card')
-    card.setAttribute('style', 'width: 25rem')
+    card.setAttribute('class', 'card shadow w-100 mx-auto')
+    // card.setAttribute('style', 'width: 25rem')
    
     let picture = '../assets/no_image.jpeg'
     if (user.image){
@@ -111,14 +111,14 @@ baseInfo.setAttribute('class', 'card-body')
         const listArray = ["People I follow", "My followers", "Account settings"]
 
         listArray.forEach(item => {
-        const listItem = document.createElement("li")
-        listItem.setAttribute('class', 'list-group-item d-grid gap-1')
-        const linkBtn = document.createElement("button")
-        linkBtn.textContent = item
-        linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
-        //ADD EVENT LISTENERS!!
-        listItem.appendChild(linkBtn)
-        linkList.appendChild(listItem)
+            const listItem = document.createElement("li")
+            listItem.setAttribute('class', 'list-group-item d-grid gap-1')
+            const linkBtn = document.createElement("button")
+            linkBtn.textContent = item
+            linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+            //ADD EVENT LISTENERS!!
+            listItem.appendChild(linkBtn)
+            linkList.appendChild(listItem)
     })
 
 baseInfo.appendChild(linkList)
@@ -149,7 +149,7 @@ async function userPosts(){
   posts.posts.forEach(post => {
 
     const card = document.createElement("div");
-    card.setAttribute('class', 'card m-3')
+    card.setAttribute('class', 'card m-3 shadow')
     const styleDiv = document.createElement("div");
     styleDiv.setAttribute('class', 'row no-gutters w-100')
     let picture = './assets/post_img.png'
@@ -173,8 +173,6 @@ async function userPosts(){
             <p class="small">${post.likes.length} likes</p>          
           </div>`
     
-
-
      const updateBtn = document.createElement("button")
      updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
      updateBtn.setAttribute('data-bs-toggle','modal')
@@ -184,9 +182,6 @@ async function userPosts(){
      updateBtn.addEventListener('click', function(e) {
       showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
      styleDiv.querySelector(".card-body").appendChild(updateBtn)
-
-
-
 
 
     card.appendChild(styleDiv);
