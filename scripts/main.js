@@ -5,7 +5,6 @@ const profile = document.getElementById('profile')
 const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
 
-
 //btns
 const createPostBtn = document.getElementById("display-create")
 
@@ -179,9 +178,9 @@ async function userPosts(){
     const card = document.createElement("div");
     card.setAttribute('class', 'card m-3 shadow')
     const styleDiv = document.createElement("div");
-    styleDiv.setAttribute('class', 'row no-gutters w-100')
+    styleDiv.setAttribute('class', 'row no-gutters w-100 mx-auto')
+    
     let picture = './assets/post_img.png'
-    // card.setAttribute('style', 'width: 18rem')
     if (post.image){
       picture = API_URL + 'uploads/posts/' + post.image
     } 
@@ -194,7 +193,7 @@ async function userPosts(){
       styleDiv.appendChild(div);
 
       styleDiv.innerHTML += `
-          <div class="card-body col-md-8">
+          <div class="card-body col-md-8 flex-wrap">
             <h5 class="card-title">${post.title}</h5>
             <p class="card-text">${post.body}</p>
             <hr>           
