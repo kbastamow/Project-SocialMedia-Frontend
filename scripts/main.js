@@ -30,8 +30,8 @@ let currentCount = document.getElementById("current-count")
 
 
 //modal for user card
-const usermodalTitle = document.getElementById("usermodal-title")
-const usermodalList = document.getElementById("usermodal-list")
+const listmodalTitle = document.getElementById("list-modal-title")
+const listmodalList = document.getElementById("list-modal-list")
 
 
 //variable that stores post id information to pass onto update form
@@ -53,10 +53,10 @@ const loginButton = document.getElementById('login-button');
 const signUpButton = document.getElementById('sign-up-button');
 const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
-const forgotPasswordLink = document.getElementById('forgot-password-link');
-const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
-const forgotPasswordForm = document.getElementById('forgot-password-form');
-const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
+// const forgotPasswordLink = document.getElementById('forgot-password-link');
+// const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
+// const forgotPasswordForm = document.getElementById('forgot-password-form');
+// const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
 
 
 
@@ -79,7 +79,6 @@ async function showUser(){
  
     const card = document.createElement("div")
     card.setAttribute('class', 'card shadow w-100 mx-auto')
-    // card.setAttribute('style', 'width: 25rem')
    
     let picture = '../assets/no_image.jpeg'
     if (user.image){
@@ -115,7 +114,7 @@ baseInfo.setAttribute('class', 'card-body')
         addBioBtn.textContent = 'Add/modify public profile'
         addBioBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
         addBioBtn.setAttribute('data-bs-toggle','modal')
-        addBioBtn.setAttribute('data-bs-target','#modal-post')
+        addBioBtn.setAttribute('data-bs-target','#form-modal')
         addBioBtn.addEventListener('click', showUpdateUser )
         baseInfo.appendChild(addBioBtn)
 
@@ -142,7 +141,7 @@ baseInfo.setAttribute('class', 'card-body')
             linkBtn.textContent = item.button
             linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
             linkBtn.setAttribute('data-bs-toggle','modal')
-            linkBtn.setAttribute('data-bs-target','#userModal')
+            linkBtn.setAttribute('data-bs-target','#list-modal')
             linkBtn.addEventListener("click", item.function)
             //ADD EVENT LISTENERS!!
             listItem.appendChild(linkBtn)
@@ -202,7 +201,7 @@ async function userPosts(){
      const updateBtn = document.createElement("button")
      updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
      updateBtn.setAttribute('data-bs-toggle','modal')
-     updateBtn.setAttribute('data-bs-target', '#modal-post')
+     updateBtn.setAttribute('data-bs-target', '#form-modal')
      updateBtn.textContent = 'Update post'
 
      updateBtn.addEventListener('click', function(e) {
@@ -243,25 +242,6 @@ async function updateUser(e){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 async function createPost(e){ 
   e.preventDefault();
 
@@ -286,11 +266,6 @@ async function createPost(e){
   } catch(error){
     console.log(error)
   }
-}
-
-
-function showUpdateForm(){
-
 }
 
 async function updatePost(e){ 
@@ -327,8 +302,8 @@ async function showFriends(e){
   e.preventDefault();
 
   try {
-  usermodalTitle.innerText = 'People you follow'
-  clearDisplay(usermodalList)
+  listmodalTitle.innerText = 'People you follow'
+  clearDisplay(listmodalList)
   const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
   let picture = '../assets/no_image.jpeg'
   
@@ -354,7 +329,7 @@ async function showFriends(e){
     li.appendChild(image)
     li.appendChild(personLink)
 
-    usermodalList.appendChild(li)
+    listmodalList.appendChild(li)
   })
 } catch(error) {
   console.error(error)
@@ -365,8 +340,8 @@ async function showFollowers(e){
   e.preventDefault();
 
   try {
-  usermodalTitle.innerText = 'People who follow you'
-  clearDisplay(usermodalList)
+  listmodalTitle.innerText = 'People who follow you'
+  clearDisplay(listmodalList)
   const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
 
   
@@ -391,16 +366,12 @@ async function showFollowers(e){
     li.appendChild(image)
     li.appendChild(personLink)
 
-    usermodalList.appendChild(li)
+    listmodalList.appendChild(li)
   })
 } catch(error) {
   console.error(error)
 }
 }
-
-
-
-
 
 
 //Counts the characters left when creating a post
@@ -418,13 +389,11 @@ function clearDisplay(element){
     }
   }
 
-
   function showUpdateUser(e){
     postFormUD.classList.add("hidden")
     postForm.classList.add("hidden")
     updateUserForm.classList.remove("hidden")
    }
-
 
 
 function showForm(e){
@@ -463,8 +432,6 @@ function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
   console.log("Write function to see other user's profile")
 }
 
-
- 
 showUser();
 userPosts();
 

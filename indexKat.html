@@ -23,7 +23,7 @@
         <div id="profile-side" class="d-flex flex-column align-content-center">
           <div class="row justify-content-center">
             <div class="row justify-content-center">
-              <button id="display-create" type="button" class="btn btn-primary col-10 m-4" data-bs-toggle="modal" data-bs-target="#modal-post">Post something</button>
+              <button id="display-create" type="button" class="btn btn-primary col-10 m-4" data-bs-toggle="modal" data-bs-target="#form-modal">Post something</button>
             </div>
           </div>
 
@@ -88,8 +88,8 @@
 
     <div id="users"> </div> <!--K-->
 
-      <!--MODAL TO CREATE POST!-->
-      <div class="modal" id="modal-post" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+      <!--MODAL FOR FORMS-->
+      <div class="modal" id="form-modal" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
         <div class="modal-dialog d-flex justify-content-center">
             <div class="modal-content w-75">
                 <div class="modal-header">
@@ -213,19 +213,19 @@
 
 
 
-<!-- MODAL for viewing friends -->
+<!-- MODAL for viewing lists -->
 
 
 
-<div class="modal" id="userModal" tabindex="-1">
+<div class="modal" id="list-modal" tabindex="-1">
   <div class="modal-dialog modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="usermodal-title">Modal title</h5>
+        <h5 class="modal-title" id="list-modal-title">Modal title</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <ul id="usermodal-list" class='list-unstyled'>
+        <ul id="list-modal-list" class='list-unstyled'>
 
         </ul>
       </div>
