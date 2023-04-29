@@ -13,223 +13,148 @@
 <body>
 
  
-
-    <div id="profile" >  <!--K-->
+<!-- USER PROFILE CARD -->
+    <div id="profile">
       <div class="d-flex container flex-column flex-md-row w-100">
         <div id="profile-main" class="col-10 col-md-4 text-center mt-4 mx-auto ">
-        
-        
         </div>
-
+<!-- POSTS BY USER -->
         <div id="profile-side" class="d-flex flex-column align-content-center">
           <div class="row justify-content-center">
             <div class="row justify-content-center">
-              <button id="display-create" type="button" class="btn btn-primary col-10 m-4" data-bs-toggle="modal" data-bs-target="#form-modal">Post something</button>
+              <button id="display-create" type="button" class="btn btn-primary col-10 m-4" data-bs-toggle="modal"
+                data-bs-target="#form-modal">Post something</button>
             </div>
           </div>
-
-
-      
-
-
-
-            <div id="profile-posts" class="p-3">
-             
-
-            </div>
-
-
-            <div id="profile-friends" class="bg bg-primary p-3 w-100">
-              <!-- style="width: 18rem" -->
-                 <div class="card" > 
-                  <div class="row no-gutters w-100"> <!--NEW-->
-                    <div class="col-md-4 d-flex justify-content-center align-items-center"> <!--NEW-->
-                    <img src="./assets/post_img.png" class="img-fluid" alt="...">
-                    </div>
-                    <div class="card-body col-md-8">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                      <p class="small">50 likes</p>
-                    </div>
-                  </div>
-                  </div>
-
-<!--
-                  <div class="card" style="width: 18rem;">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                      <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                  </div>
-                  <div class="card" style="width: 18rem;">
-                    <img src="..." class="card-img-top" alt="...">
-                    <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                      <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                  </div> -->
-
-            </div>
-
-
-      
-        </div>    
+    
+          <!-- Post cards from JS-->
+          <div id="profile-posts" class="p-3">
+    
+          </div>
+    
         </div>
+      </div>
     </div>
 
+    <!-- <div id="users"> </div>   CURRENTLY NOT IN USE-->
 
+<!--MODAL FOR FORMS-->
+    <div class="modal" id="form-modal" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+      <div class="modal-dialog d-flex justify-content-center">
+        <div class="modal-content w-75">
+          <div class="modal-header">
+            <h5 class="modal-title">Complete the fields</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body p-4">
 
+            <!--CREATE POST FORM STARTS HERE -->
+            <form id="post-form" enctype="multipart/form-data" method="post">
+              <!-- Title -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="posttitle">Post Title</label>
+                <input type="text" id="posttitle" class="form-control" required maxlength="30" />
+              </div>
+              <!-- Body -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="postbody">Post text</label>
+                <textarea id="postbody" rows="4" class="form-control" required maxlength="700"></textarea>
+                <span id="current-count" class="small text-muted">0/700</span>
+              </div>
+              <!-- Upload an image -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="postImage">Upload an image</label>
+                <input type="file" id="postimage" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
+              </div>
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary btn-block col-12 mx-auto" data-bs-dismiss="modal"
+                aria-label="Close">Post</button>
+            </form>
+            <!--CREATE POST FORM ENDS -->
 
+            <!-- UPDATE POST FORM STARTS HERE -->
+            <form id="post-form-update" enctype="multipart/form-data" method="put">
+              <!-- Title -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="posttitle-update">Post Title</label>
+                <input type="text" id="posttitle-update" class="form-control" maxlength="30" />
+              </div>
+              <!-- Body -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="postbody-update">Post text</label>
+                <textarea id="postbody-update" rows="4" class="form-control" maxlength="700"></textarea>
+              </div>
+              <!-- Upload an image -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="postimage-update">Upload a different image</label>
+                <input type="file" id="postimage-update" name="filename"
+                  accept="image/jpeg, image/png, image/jpg, image/gif">
+              </div>
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-success btn-block col-12 mx-auto" data-bs-dismiss="modal" aria-label="Close">Update
+                Post</button>
+              </form>
+              <!-- Delete post part -->
+              <div class="d-flex justify-content-center">
+                <button id="delete-post" type="button" class="btn btn-danger btn-sm col-8 mt-3">Delete this post</button>
+              </div>
+              <div id="warning-div" class="hidden text-center">
+                <p class="text-danger fw-bold mt-2">This action will delete your post permanently!</p>
+                <button id="confirm-delete" type="button" class="btn btn-dark btn-sm mx-auto mt-2">confirm delete</button>
+              </div>
+            <!-- UPDATE POST FORM ENDS  -->
 
-
-    </div> 
-
-    <div id="users"> </div> <!--K-->
-
-      <!--MODAL FOR FORMS-->
-      <div class="modal" id="form-modal" tabindex="-1" aria-labelledby="exampleModalLabel4" aria-hidden="true">
-        <div class="modal-dialog d-flex justify-content-center">
-            <div class="modal-content w-75">
-                <div class="modal-header">
-                    <h5 class="modal-title">Complete the fields</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4">
-
-<!--CREATE POST FORM STARTS HERE -->
-                    <form id="post-form" enctype="multipart/form-data" method="post">
-                        <!-- Title -->
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="posttitle">Post Title</label>
-                            <input type="text" id="posttitle" class="form-control" required  maxlength="30"/>
-                            
-                        </div>
-    
-                       
-                        <!-- Body -->
-                        <div class="form-outline mb-4">
-                            <label class="form-label" for="postbody">Post text</label>
-                            <textarea id="postbody" rows="4" class="form-control" required maxlength="700"></textarea>
-                            <span id="current-count" class="small text-muted">0/700</span>
-                          
-                          
-                        </div>
-
-                         <!-- Upload an image -->
-                         <div class="form-outline mb-4">
-                            <label class="form-label" for="postImage">Upload an image</label>
-                            <input type="file" id="postimage" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
-                        </div>
-    
-    
-                        <!-- Checkbox -->
-                        
-    
-                        <!-- Submit button -->
-                        <button type="submit" class="btn btn-primary btn-block col-12 mx-auto" data-bs-dismiss="modal" aria-label="Close">Post</button>
-                    </form>
-
-<!-- UPDATE POST FORM STARTS HERE -->
-<form id="post-form-update" enctype="multipart/form-data" method="put">
-  <!-- Title -->
-  <div class="form-outline mb-4">
-      <label class="form-label" for="posttitle-update">Post Title</label>
-      <input type="text" id="posttitle-update" class="form-control"  maxlength="30" />
-      
-  </div>
-
- 
-  <!-- Body -->
-  <div class="form-outline mb-4">
-      <label class="form-label" for="postbody-update">Post text</label>
-      <textarea id="postbody-update" rows="4" class="form-control" maxlength="700"></textarea>
-      
-    
-    
-  </div>
-
-   <!-- Upload an image -->
-   <div class="form-outline mb-4">
-      <label class="form-label" for="postimage-update">Upload a different image</label>
-      <input type="file" id="postimage-update" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
-  </div>
-  
-  <!-- Submit button -->
-  <button type="submit" class="btn btn-success btn-block col-12 mx-auto" data-bs-dismiss="modal" aria-label="Close">Update Post</button>
-</form>
-<div class="d-flex justify-content-center">
-  <button id="delete-post" type="button" class="btn btn-danger btn-sm col-8 mt-3">Delete this post</button>
-</div>
-  <div id="warning-div" class="hidden text-center">
-    <p class="text-danger fw-bold mt-2">This action will delete your post permanently!</p>
-    <button id="confirm-delete" type="button" class="btn btn-dark btn-sm mx-auto mt-2">confirm delete</button>
-  </div>
-<!-- UPDATE POST FORM ENDS HERE -->
-
-
-
-
-<!-- UPDATE USER INFO STARTS HERE -->
-<form id="update-user" enctype="multipart/form-data" method="put">
-  <!-- Title -->
-  <div class="form-outline mb-4">
-      <label class="form-label" for="update-title">Title</label>
-      <input type="text" id="update-title" class="form-control" placeholder="e.g. Lifestyle traveller, Digital nomad"  maxlength="30"/>
-      
-  </div>
-
-   <!-- Body -->
-  <div class="form-outline mb-4">
-      <label class="form-label" for="update-bio">Short biography</label>
-      <textarea id="update-bio" rows="4" class="form-control" maxlength="200" placeholder="Tell others something about yourself"></textarea>
-      
-  </div>
-  
-  <!-- Upload an image -->
-  <div class="form-outline mb-4">
-    <label class="form-label" for="update-image">Upload a profile picture</label>
-    <input type="file" id="update-image" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
-</div>
-
-
-  <!-- Submit button -->
-  <button type="submit" class="btn btn-success btn-block col-12 mx-auto" data-bs-dismiss="modal" aria-label="Close">Save changes</button>
-</form>
-<!-- UPDATE POST FORM ENDS HERE -->
-
-
-                </div>
-            </div>
+            <!-- UPDATE USER FORM STARTS HERE -->
+            <form id="update-user" enctype="multipart/form-data" method="put">
+              <!-- Title -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="update-title">Title</label>
+                <input type="text" id="update-title" class="form-control"
+                  placeholder="e.g. Lifestyle traveller, Digital nomad" maxlength="30" />
+              </div>
+              <!-- Body -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="update-bio">Short biography</label>
+                <textarea id="update-bio" rows="4" class="form-control" maxlength="200"
+                  placeholder="Tell others something about yourself"></textarea>
+              </div>
+              <!-- Upload an image -->
+              <div class="form-outline mb-4">
+                <label class="form-label" for="update-image">Upload a profile picture</label>
+                <input type="file" id="update-image" name="filename" accept="image/jpeg, image/png, image/jpg, image/gif">
+              </div>
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-success btn-block col-12 mx-auto" data-bs-dismiss="modal"
+                aria-label="Close">Save changes</button>
+            </form>
+            <!-- UPDATE USER FORM ENDS HERE -->
+          </div>
         </div>
-    </div>
-    <!-- Modal -->
-
-
-<!-- MODAL for viewing lists -->
-
-<div class="modal" id="list-modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="list-modal-title">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <ul id="list-modal-list" class='list-unstyled'>
-
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
-  </div>
-</div>
+    <!-- Form Modal end-->
 
 
+    <!-- MODAL FOR LISTS -->
+
+    <div class="modal" id="list-modal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="list-modal-title">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <ul id="list-modal-list" class='list-unstyled'>
+              <!-- Lists are created here dynamically -->
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 

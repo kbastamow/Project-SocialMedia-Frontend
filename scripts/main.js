@@ -59,10 +59,10 @@ const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
 
 //PACO: bootstrap.Modal crashes my page - not recognised???
-const forgotPasswordLink = document.getElementById('forgot-password-link');
-const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
-const forgotPasswordForm = document.getElementById('forgot-password-form');
-const sendButtonRecover = document.getElementById('send-button-recover');
+// const forgotPasswordLink = document.getElementById('forgot-password-link');
+// const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
+// const forgotPasswordForm = document.getElementById('forgot-password-form');
+// const sendButtonRecover = document.getElementById('send-button-recover');
 
 
 
