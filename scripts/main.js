@@ -9,7 +9,7 @@ const homeBtn = document.getElementById("home-btn")
 const profile = document.getElementById('profile')
 const profileMain = document.getElementById('profile-main')
 const profilePosts = document.getElementById("profile-posts")
-
+const otherUser = document.getElementById("other-user")
 
 const createPostBtn = document.getElementById("display-create")
 
@@ -36,6 +36,11 @@ const updateUserForm = document.getElementById("update-user")
 
 //count characters of post body
 let currentCount = document.getElementById("current-count")
+
+const othersMain = document.getElementById("others-main")
+const othersSide = document.getElementById("others-side")
+
+
 
 
 //modal for user card
@@ -228,7 +233,6 @@ async function userPosts(){
       childDiv.appendChild(likes);
      }
 
-
      //Comments link
      if (post.commentIds.length > 0) {  //If there are any comments
       const comments = document.createElement("button")
@@ -393,7 +397,7 @@ async function showFriends(e){
     const personLink= document.createElement('button')
     personLink.innerText = person.username
     personLink.setAttribute('class', 'btn btn-link')
-    personLink.addEventListener("click", function(e){otherUser(e, person.username) })
+    personLink.addEventListener("click", function(e){getOther(e, person.username) })
    
  
     li.appendChild(image)
@@ -429,7 +433,7 @@ async function showFollowers(e){
     const personLink= document.createElement('button')
     personLink.innerText = person.username
     personLink.setAttribute('class', 'btn btn-link')
-    personLink.addEventListener("click", function(e){otherUser(e, person.username) })
+    personLink.addEventListener("click", function(e){getOther(e, person.username) })
 
     li.appendChild(image)
     li.appendChild(personLink)
@@ -459,7 +463,7 @@ async function showLikers(e, postId){
        const personLink= document.createElement('button')
        personLink.innerText = person.username
        personLink.setAttribute('class', 'btn btn-link text-decoration-none')
-       personLink.addEventListener("click", function(e){otherUser(e, person.username) })
+       personLink.addEventListener("click", function(e){getOther(e, person.username) })
 
        li.appendChild(icon)
        li.appendChild(personLink)
@@ -473,6 +477,7 @@ async function showLikers(e, postId){
 
 function showComments(e, commentArray){
   e.preventDefault();
+  console.log(commentArray)
   clearDisplay(listmodalList)
   listmodalTitle.innerText = 'Comments'
   commentArray.forEach(comment => {
@@ -492,10 +497,6 @@ function showComments(e, commentArray){
 })
  
 }
-
-
-
-
 
 //Counts the characters left when creating a post
 function countCharacters(){
@@ -555,12 +556,81 @@ function showWarning(e){
   warningDiv.classList.remove("hidden");
 }
 
-function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
+async function getOther(e, username){  //FUNCTION YET TO BE WRITTEN
   e.preventDefault();  
   console.log("Write function to see other user's profile")
+  console.log(username)
+  try {
+  const res = await axios.get(API_URL + 'users/getbyusername/' + username)
+  console.log(res.data)
+  showOtherProfile(res.data[0]) //name search returned array
+  // showOtherPosts(res.data[0])
+
+}catch(error){
+  console.log(error)
+}
 }
 
 
+function showOtherProfile(user) {
+  console.log(user)
+  otherUser.classList.remove('hidden')
+  profile.classList.add('hidden')
+  const card = document.createElement("div")
+  card.setAttribute('class', 'card shadow w-100 mx-auto')
+     
+  let picture = '../assets/no_image.jpeg'
+      if (user.image){
+        picture = API_URL + 'uploads/users/' + user.image
+      }
+  const profilePic = document.createElement("img")
+  profilePic.setAttribute('class', 'card-img-top')
+  profilePic.setAttribute('src', picture)
+  card.appendChild(profilePic)
+  
+  //Name, title and biography
+  
+  const baseInfo = document.createElement("div")
+  baseInfo.setAttribute('class', 'card-body')
+  
+          const userName = `<h5 class="card-title">${user.username}</h5>`
+          baseInfo.innerHTML = userName
+  
+          if (user.title){
+              const userTitle = `<p class="text-primary">${user.title}</p>`
+              baseInfo.innerHTML += userTitle
+          }
+          let userBio= `<p class="card-text">No biography</p>`
+          if (user.bio){
+              userBio = `<p class="card-text">${user.bio}</p>`   
+          }
+          baseInfo.innerHTML += userBio
+  
+  
+  //Add one link
+          const linkList = document.createElement('ul')
+          linkList.setAttribute('class', 'list-group list-group-flush')                   
+          const listItem = document.createElement("li")
+          listItem.setAttribute('class', 'list-group-item d-grid gap-1')
+          const linkBtn = document.createElement("button")
+          linkBtn.textContent = user.username + "'s followers"
+          linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+          // linkBtn.setAttribute('data-bs-toggle','modal')
+          // linkBtn.setAttribute('data-bs-target','#list-modal')
+          // linkBtn.addEventListener("click", FUNCTION TO SEE FOLLOWERS???)
+          
+          listItem.appendChild(linkBtn)
+          linkList.appendChild(listItem)
+  
+  baseInfo.appendChild(linkList)
+  card.appendChild(baseInfo)
+  
+  
+ othersMain.appendChild(card);
+  
+
+  }
+  
 function userView(e){
   e.preventDefault();
   console.log("trying out")
