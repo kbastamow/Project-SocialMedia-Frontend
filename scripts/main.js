@@ -215,22 +215,41 @@ async function userPosts(){
      if (post.likes.length > 0) {  //If there are any likes
       const likes = document.createElement("button")
       likes.innerText = post.likes.length + ' likes'
-      likes.setAttribute('class', 'btn btn-link d-block btn-sm text-success')
+      likes.setAttribute('class', 'btn btn-link btn-sm text-success')
       likes.setAttribute('data-bs-toggle','modal')
       likes.setAttribute('data-bs-target','#list-modal')
       likes.addEventListener("click", function(e){ showLikers(e, post._id)})
      
       childDiv.appendChild(likes);
      } else {
-      const likes = document.createElement("p")
-      likes.innerText = post.likes.length + ' likes'
-      likes.setAttribute('class', 'small text-success')
+      const likes = document.createElement("span")
+      likes.innerText = 'No likes yet'
+      likes.setAttribute('class', 'small text-success ps-2')
       childDiv.appendChild(likes);
      }
 
+
+     //Comments link
+     if (post.commentIds.length > 0) {  //If there are any comments
+      const comments = document.createElement("button")
+      comments.innerText = post.commentIds.length + ' comments'
+      comments.setAttribute('class', 'btn btn-link')
+      comments.setAttribute('data-bs-toggle','modal')
+      comments.setAttribute('data-bs-target','#list-modal')
+      comments.addEventListener("click", function(e){ showComments(e, post.commentIds)})
+     
+      childDiv.appendChild(comments);
+     } else {
+      const comments = document.createElement("span")
+      comments.innerText = 'No comments yet'
+      comments.setAttribute('class', 'ps-2')
+      childDiv.appendChild(comments);
+     }
+
+
      //Update button
      const updateBtn = document.createElement("button")
-     updateBtn.setAttribute('class','btn btn-light y btn-sm p-2' )
+     updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
      updateBtn.setAttribute('data-bs-toggle','modal')
      updateBtn.setAttribute('data-bs-target', '#form-modal')
      updateBtn.textContent = 'Update post'
@@ -452,6 +471,32 @@ async function showLikers(e, postId){
 }
 }
 
+function showComments(e, commentArray){
+  e.preventDefault();
+  clearDisplay(listmodalList)
+  listmodalTitle.innerText = 'Comments'
+  commentArray.forEach(comment => {
+
+    const li = document.createElement("li")
+   
+    
+    
+    const content= document.createElement('div')
+    content.innerHTML = `<p class="small text-secondary mb-0">by ${comment.userId.username} :</p>
+                           <p>${comment.body}</p><hr>                      
+                          `
+    
+    li.appendChild(content)
+
+ listmodalList.appendChild(li)
+})
+ 
+}
+
+
+
+
+
 //Counts the characters left when creating a post
 function countCharacters(){
 let enteredText = postbody.value.length;
@@ -540,8 +585,16 @@ function home(e){
 }
 
 
-// showUser(); // MARKER
-// userPosts(); // MARKER
+
+
+
+//START FROM USERVIEW - UNCOMMENT THE FOLLOWING
+loginView.classList.add('hidden');
+profile.classList.remove('hidden')
+showUser(); // MARKER
+userPosts(); // MARKER
+
+
 userviewBtn.addEventListener("click", userView)
 homeBtn.addEventListener("click", home)
 postForm.addEventListener("submit", createPost)
