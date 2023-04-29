@@ -9,3 +9,20 @@
 .custom-height {
   height: 15%;
 }
+
+.vertical-line {
+  border-left: 1px solid #ccc;
+  height: 100%;
+}
+
+#bookface {
+  font-size: 4rem;
+  color: rgb(28, 103, 208);
+}
+
+.horizontal-line {
+  border-top: 1px solid #ccc;
+  width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}

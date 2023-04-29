@@ -48,6 +48,13 @@ const loginButton = document.getElementById('login-button');
 const signUpButton = document.getElementById('sign-up-button');
 const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
+const forgotPasswordLink = document.getElementById('forgot-password-link');
+const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
+const forgotPasswordForm = document.getElementById('forgot-password-form');
+const sendButtonRecover = forgotPasswordForm.querySelector('button[type="submit"]');
+
+
+
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMzNDVkNGM4NGEzMTQiLCJpYXQiOjE2ODI1MDY5NjJ9.wyXaMIsOWZapkwcvZsM9FJooyZ6uRD4gX-JjRy4sboI';
 
 
@@ -472,6 +479,32 @@ async function signUp(e) {
     alert('An error occurred during login. Please try again.');
   }
 }
+
+forgotPasswordLink.addEventListener('click', (event) => {
+  event.preventDefault();
+  forgotPasswordModal.show();
+});
+
+
+sendButtonRecover.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const emailInput = forgotPasswordForm.querySelector('#email-input');
+  const email = emailInput.value;
+  try {
+    const response = await axios.post(API_URL + '/recoverPassword/' + email);
+    if (response.data.success) {
+      alert('Confirmation email sent!');
+      const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
+      forgotPasswordModal.hide();
+    } else {
+      alert('Error sending confirmation email. Please try again later.');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Error sending confirmation email. Please try again later.');
+  }
+});
+
 
 async function displayMainFeed() {
   try {
