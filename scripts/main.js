@@ -40,13 +40,15 @@ let currentCount = document.getElementById("current-count")
 const othersMain = document.getElementById("others-main")
 const othersSide = document.getElementById("others-side")
 
-
-
-
 //modal for user card
 const listmodalTitle = document.getElementById("list-modal-title")
 const listmodalList = document.getElementById("list-modal-list")
 
+
+const addComment = document.getElementById("add-comment")
+const addCommentForm = document.getElementById("add-comment-form")
+const newComment = document.getElementById("new-comment")
+const commentBtn = document.getElementById("comment-btn")
 
 //variable that stores post id information to pass onto update form
 let postInfo = {
@@ -55,7 +57,7 @@ let postInfo = {
   "postId": "",
 } 
 
-let userInfo = {} //userID is saved here on login
+let userInfo = {id: '6445388da8130f4b9f500867'} //userID is saved here on login
 
 ///////////////////////////////Variables Paco
 const loginView = document.getElementById('login-view');
@@ -67,8 +69,6 @@ const loginButton = document.getElementById('login-button');
 const signUpButton = document.getElementById('sign-up-button');
 const redirectToSignUpButton = document.getElementById('redirect-to-sign-up');
 
-
-// PACO: bootstrap.Modal crashes my page - not recognised???
 const forgotPasswordLink = document.getElementById('forgot-password-link');
 const forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgot-password-modal'));
 const forgotPasswordForm = document.getElementById('forgot-password-form');
@@ -240,8 +240,7 @@ async function userPosts(){
       comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
       comments.setAttribute('data-bs-toggle','modal')
       comments.setAttribute('data-bs-target','#list-modal')
-      comments.addEventListener("click", function(e){ showComments(e, post.commentIds)})
-     
+      comments.addEventListener("click", function(e){ showComments(e, {commentArray: post.commentIds, idOfPost: post._id})})
       childDiv.appendChild(comments);
      } else {
       const comments = document.createElement("span")
@@ -249,7 +248,6 @@ async function userPosts(){
       comments.setAttribute('class', 'small ps-2')
       childDiv.appendChild(comments);
      }
-
 
      //Update button
      const updateBtn = document.createElement("button")
@@ -410,7 +408,10 @@ async function showFriends(e){
 
 async function showFollowers(e){
   e.preventDefault();
-
+  
+  //Hides comment field since we are using the same modal
+  addComment.classList.add('hidden');
+ 
   try {
   listmodalTitle.innerText = 'People who follow you'
   clearDisplay(listmodalList)
@@ -446,7 +447,8 @@ async function showFollowers(e){
 
 async function showLikers(e, postId){
   e.preventDefault();
-  console.log(postId)
+   //Hides comment field since we are using the same modal
+   addComment.classList.add('hidden');
 
   try {
   listmodalTitle.innerText = 'People who liked your post'
@@ -473,17 +475,14 @@ async function showLikers(e, postId){
 }
 }
 
-function showComments(e, commentArray){
+function showComments(e, {commentArray, idOfPost}){
+  console.log(idOfPost)
   e.preventDefault();
-  console.log(commentArray)
   clearDisplay(listmodalList)
   listmodalTitle.innerText = 'Comments'
   commentArray.forEach(comment => {
 
-    const li = document.createElement("li")
-   
-    
-    
+    const li = document.createElement("li")   
     const content= document.createElement('div')
     content.innerHTML = `<p class="small text-secondary mb-0">by ${comment.userId.username} :</p>
                            <p>${comment.body}</p><hr>                      
@@ -493,8 +492,24 @@ function showComments(e, commentArray){
 
  listmodalList.appendChild(li)
 })
- 
+addComment.classList.remove('hidden');
+postInfo.postId = idOfPost //store in variable temporarily
 }
+
+async function createComment(e){
+  e.preventDefault()
+  token = localStorage.getItem('token')
+  try{
+    const res = await axios.post(API_URL + 'comments/create/' + postInfo.postId, {"body": newComment.value}, {
+      headers: {authorization: token}
+    })
+    postInfo.postId = '' //clear variable
+    userPosts()
+  }catch(error){
+    console.error(error);
+  }
+}
+
 
 //Counts the characters left when creating a post
 function countCharacters(){
@@ -660,11 +675,11 @@ function accountSettings(e){
 }
 
 
-//START FROM USERVIEW - UNCOMMENT THE FOLLOWING
-// loginView.classList.add('hidden');
-// profile.classList.remove('hidden')
-// showUser(); 
-// userPosts(); 
+// START FROM USERVIEW - UNCOMMENT THE FOLLOWING
+loginView.classList.add('hidden');
+profile.classList.remove('hidden')
+showUser(); 
+userPosts(); 
 
 
 userviewBtn.addEventListener("click", userView)
@@ -672,11 +687,11 @@ homeBtn.addEventListener("click", home)
 postForm.addEventListener("submit", createPost)
 postFormUD.addEventListener("submit", updatePost)
 updateUserForm.addEventListener("submit", updateUser)
+addCommentForm.addEventListener("submit", createComment);
 postbody.addEventListener("input", countCharacters)
 createPostBtn.addEventListener("click", showForm)
 deletePostBtn.addEventListener("click", showWarning)
 confirmDelete.addEventListener("click", deletePost)
-
 
 
 
