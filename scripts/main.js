@@ -76,7 +76,7 @@ const sendButtonRecover = document.getElementById('send-button-recover');
 
 
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMzNDVkNGM4NGEzMTQiLCJpYXQiOjE2ODI1MDY5NjJ9.wyXaMIsOWZapkwcvZsM9FJooyZ6uRD4gX-JjRy4sboI';
+// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMzNDVkNGM4NGEzMTQiLCJpYXQiOjE2ODI1MDY5NjJ9.wyXaMIsOWZapkwcvZsM9FJooyZ6uRD4gX-JjRy4sboI';
 
 
 ///////////////////////////////////////////////////////////////KAT functions
@@ -179,10 +179,10 @@ async function userPosts(){
   
   try{
   clearDisplay(profilePosts)
-  let tokenKat = localStorage.getItem('token')
+  let token = localStorage.getItem('token')
   const res = await axios.get(API_URL + 'posts/getUsersPosts', {
       headers: {
-        "Authorization": tokenKat,
+        "Authorization": token,
         "_id": userInfo.id  //Replace this when login is in place!!
       }
   })
@@ -274,7 +274,7 @@ async function userPosts(){
 async function updateUser(e){ 
   e.preventDefault();
   
-  let tokenKat = localStorage.getItem('token')
+  let token = localStorage.getItem('token')
   const formData = new FormData();
   if (updateTitle.value.length > 0) formData.append("title", updateTitle.value);
   if (updateBio.value.length > 0) formData.append("bio", updateBio.value)
@@ -283,7 +283,7 @@ async function updateUser(e){
   try{
     const res = await axios.put(API_URL + 'users/update/', formData, {
       headers: {
-        "Authorization": tokenKat,
+        "Authorization": token,
         "Content-Type": "multipart/form-data"
       }
     })
@@ -299,7 +299,7 @@ async function updateUser(e){
 async function createPost(e){ 
   e.preventDefault();
 
-  let tokenKat = localStorage.getItem('token')
+  let token = localStorage.getItem('token')
 
   
   const formData = new FormData();
@@ -311,7 +311,7 @@ async function createPost(e){
   try{
     const res = await axios.post(API_URL + 'posts/create', formData, {
       headers: {
-        "Authorization": tokenKat,
+        "Authorization": token,
         "Content-Type": "multipart/form-data"
       }
     })
@@ -325,7 +325,7 @@ async function createPost(e){
 async function updatePost(e){ 
   e.preventDefault();
   
-  let tokenKat = localStorage.getItem('token')
+  let token = localStorage.getItem('token')
   const formData = new FormData();
   formData.append("title", posttitleUD.value);
   formData.append("body", postbodyUD.value)
@@ -335,7 +335,7 @@ async function updatePost(e){
   try{
     const res = await axios.put(API_URL + 'posts/update/' + postInfo.postId, formData, {
       headers: {
-        "Authorization": tokenKat,
+        "Authorization": token,
         "Content-Type": "multipart/form-data"
       }
     })
@@ -354,11 +354,11 @@ async function deletePost(e) {
   e.preventDefault();
   console.log("Write delete post function")
   console.log(postInfo.postId)
-  let tokenKat = localStorage.getItem('token')
+  let token = localStorage.getItem('token')
   try {
     const res = await axios.delete(API_URL + 'posts/delete/' + postInfo.postId, {
       headers: {
-        "Authorization": tokenKat,
+        "Authorization": token,
       }
     })
     console.log("post deleted")
@@ -785,6 +785,7 @@ sendButtonRecover.addEventListener('click', async (e) => {
 
 async function displayMainFeed() {
   try {
+    let token = localStorage.getItem('token') //PACO: ADDED THIS or the token won't work
     let response = await axios.get(API_URL + 'posts/getFriendsPosts',{
       headers: {
         Authorization: token
