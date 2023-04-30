@@ -234,20 +234,17 @@ async function userPosts(){
      }
 
      //Comments link
-     if (post.commentIds.length > 0) {  //If there are any comments
-      const comments = document.createElement("button")
-      comments.innerText = post.commentIds.length + ' comments'
+       const comments = document.createElement("button")
+      if (post.commentIds.length > 0) {  //If there are any comments
+        comments.innerText = post.commentIds.length + ' comments'
+      } else {
+        comments.innerText = 'No comments yet'
+      }
       comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
-      comments.setAttribute('data-bs-toggle','modal')
-      comments.setAttribute('data-bs-target','#list-modal')
-      comments.addEventListener("click", function(e){ showComments(e, {commentArray: post.commentIds, idOfPost: post._id})})
+      comments.setAttribute('data-bs-toggle', 'modal')
+      comments.setAttribute('data-bs-target', '#list-modal')
+      comments.addEventListener("click", function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
       childDiv.appendChild(comments);
-     } else {
-      const comments = document.createElement("span")
-      comments.innerText = 'No comments yet'
-      comments.setAttribute('class', 'small ps-2')
-      childDiv.appendChild(comments);
-     }
 
      //Update button
      const updateBtn = document.createElement("button")
@@ -479,7 +476,9 @@ function showComments(e, {commentArray, idOfPost}){
   console.log(idOfPost)
   e.preventDefault();
   clearDisplay(listmodalList)
-  listmodalTitle.innerText = 'Comments'
+
+  listmodalTitle.innerText =  (commentArray.length > 0) ? 'Comments' : 'Be first to comment'
+
   commentArray.forEach(comment => {
 
     const li = document.createElement("li")   
