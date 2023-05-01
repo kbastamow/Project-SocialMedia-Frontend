@@ -20,9 +20,24 @@
   color: rgb(28, 103, 208);
 }
 
+#bookfacesmall {
+  font-size: 2rem;
+  color: rgb(28, 103, 208);
+  margin-left: 10%;
+
+}
+
+
 .horizontal-line {
   border-top: 1px solid #ccc;
   width: 100%;
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+
+
+
+.likeicon:hover {
+  cursor: pointer;
+
 }

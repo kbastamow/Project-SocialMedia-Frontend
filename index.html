@@ -100,7 +100,7 @@
 
   <div id="main-view" class="hidden">  <!--MAIN VIEW-->
     <nav class="navbar navbar-light bg-light justify-content-between">
-      <a class="navbar-brand" href="#">Mongito</a>
+      <a id="bookfacesmall" class="navbar-brand" href="#">Mongito</a>
       <button id="home-btn" class="navbar-brand btn btn-link fs-6 text-primary" disabled>Home</button>
       <button id="userview-btn" class="navbar-brand btn btn-link fs-6 text-primary">Your profile</button>
       <form class="form-inline">
@@ -238,14 +238,16 @@
             Post</button>
           </form>
           <!-- Delete post part -->
-          <div class="d-flex justify-content-center">
+          <div  id="delete-div" class="hidden">
+          <div class="d-flex justify-content-center hidden">
             <button id="delete-post" type="button" class="btn btn-danger btn-sm col-8 mt-3">Delete this post</button>
           </div>
           <div id="warning-div" class="hidden text-center">
             <p class="text-danger fw-bold mt-2">This action will delete your post permanently!</p>
             <button id="confirm-delete" type="button" class="btn btn-dark btn-sm mx-auto mt-2">confirm delete</button>
           </div>
-        <!-- UPDATE POST FORM ENDS  -->
+        </div>
+          <!-- UPDATE POST FORM ENDS  -->
 
         <!-- UPDATE USER FORM STARTS HERE -->
         <form id="update-user" enctype="multipart/form-data" method="put">
@@ -300,11 +302,10 @@
           aria-label="Close">Comment</button>
         </form>
       </div>
+      <div id="alert-msg"></div>
 
 
-
-
-        
+       
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
