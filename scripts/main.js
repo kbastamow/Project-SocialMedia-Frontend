@@ -32,7 +32,7 @@ const updateBio = document.getElementById('update-bio')
 const updateTitle = document.getElementById('update-title')
 const updateImage = document.getElementById('update-image')
 const updateUserForm = document.getElementById('update-user')
-
+const deleteDiv = document.getElementById("delete-div")
 //count characters of post body
 let currentCount = document.getElementById('current-count')
 
@@ -48,7 +48,7 @@ const addComment = document.getElementById('add-comment')
 const addCommentForm = document.getElementById('add-comment-form')
 const newComment = document.getElementById('new-comment')
 const commentBtn = document.getElementById('comment-btn')
-
+const alertMsg = document.getElementById("alert-msg")
 //variable that stores post id information to pass onto update form
 let postInfo = {
   'title': '',
@@ -92,6 +92,7 @@ async function showUser(){
   
   try{
     clearDisplay(profileMain)
+    clearDisplay(othersMain)
     // e.preventDefault();
     const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
     const user = res.data
@@ -215,24 +216,22 @@ async function userPosts(idOfPoster){ //PACO: pass userId to get their posts! //
             <hr>           
           </div>`
     
-      //Likes link
 
-      const childDiv = styleDiv.querySelector('.card-body');
-      if (post.likes.length > 0) {  //If there are any likes
-        const likes = document.createElement('button')
-        likes.innerText = post.likes.length + ' likes'
-        likes.setAttribute('class', 'btn btn-link btn-sm text-success')
-        likes.setAttribute('data-bs-toggle','modal')
-        likes.setAttribute('data-bs-target','#list-modal')
-        likes.addEventListener('click', function(e){ showLikers(e, post._id)})
-      
-        childDiv.appendChild(likes);
-      } else {
-        const likes = document.createElement('span')
-        likes.innerText = 'No likes yet'
-        likes.setAttribute('class', 'small text-success ps-2')
-        childDiv.appendChild(likes);
-      }
+     const childDiv = styleDiv.querySelector('.card-body');
+     
+     //Likes link
+     const likes = document.createElement('button')
+     if (post.likes.length > 0) {  //If there are any likes
+      likes.innerText = post.likes.length + ' likes'
+    } else {
+      likes.innerText = 'No likes yet'
+    }
+      likes.setAttribute('class', 'btn btn-link btn-sm text-success px-4')
+      likes.setAttribute('data-bs-toggle','modal')
+      likes.setAttribute('data-bs-target','#list-modal')
+      likes.addEventListener('click', function(e){ showLikers(e, post._id)})
+     
+      childDiv.appendChild(likes);
 
       //Comments link
         const comments = document.createElement('button')
@@ -351,8 +350,6 @@ async function updatePost(e){
 
 async function deletePost(e) {
   e.preventDefault();
-  console.log('Write delete post function')
-  console.log(postInfo.postId)
   let token = localStorage.getItem('token')
   try {
     const res = await axios.delete(API_URL + 'posts/delete/' + postInfo.postId, {
@@ -360,7 +357,6 @@ async function deletePost(e) {
         'Authorization': token,
       }
     })
-    console.log('post deleted')
     warningDiv.classList.add('hidden')
     userPosts(userInfo.id)
 
@@ -448,35 +444,42 @@ async function showFollowers(e){
 };
 
 
-async function showLikers(e, postId){
+async function showLikers(e, postId) {
   e.preventDefault();
-   //Hides comment field since we are using the same modal
-   addComment.classList.add('hidden');
-
+  //Hides comment field since we are using the same modal
+  addComment.classList.add('hidden');
+  listmodalTitle.innerText = 'No likes yet'
   try {
-    listmodalTitle.innerText = 'People who liked your post'
+    listmodalTitle.innerText = 'People who liked this post'
     clearDisplay(listmodalList)
     const res = await axios.get(API_URL + 'posts/getbyid/' + postId)
-    console.log(res.data)
     res.data.likes.forEach(person => {
       const li = document.createElement('li')
 
-        const icon = document.createElement('span')
-        icon.innerHTML = `<i class='fa-solid fa-heart-circle-plus fa-xl' style='color: #f60909;'></i>`         
-        const personLink= document.createElement('button')
-        personLink.innerText = person.username
-        personLink.setAttribute('class', 'btn btn-link text-decoration-none')
-        personLink.addEventListener('click', function(e){getOther(e, person.username) })
+      const icon = document.createElement('span')
+      icon.innerHTML = `<i class='fa-solid fa-heart-circle-plus fa-xl' style='color: #f60909;'></i>`
+      const personLink = document.createElement('button')
+      personLink.innerText = person.username
+      personLink.setAttribute('class', 'btn btn-link text-decoration-none')
+      personLink.addEventListener('click', function (e) { getOther(e, person.username) })
 
-        li.appendChild(icon)
-        li.appendChild(personLink)
+      li.appendChild(icon)
+      li.appendChild(personLink)
 
       listmodalList.appendChild(li)
     })
-  } catch(error) {
+  } catch (error) {
     console.error(error)
   }
-};
+
+    //Add a like
+    const likeIcon = document.createElement("button")
+    likeIcon.setAttribute('class', 'btn btn-outline-danger mt-4')
+    likeIcon.innerHTML = `<i class='fa-solid fa-heart-circle-plus fa-lg'></i><span>Like this post</span>`
+    likeIcon.addEventListener("click", function (e) { addLike(e, postId) })
+    listmodalList.appendChild(likeIcon)
+}
+
 
 function showComments(e, {commentArray, idOfPost}){
   e.preventDefault();
@@ -508,7 +511,7 @@ async function createComment(e){
       headers: {authorization: token}
     })
     postInfo.postId = '' //clear variable
-    userPosts(userInfo.id)
+    userPosts(userInfo.id)    //THIS SHOULD CHANGE ACCORDING TO PAGE WHERE WE ARE
   }catch(error){
     console.error(error);
   }
@@ -527,19 +530,25 @@ function clearDisplay(element){
   }
 };
 
-function showUpdateUser(e){
-  postFormUD.classList.add('hidden')
-  postForm.classList.add('hidden')
-  updateUserForm.classList.remove('hidden')
-};
+  function showUpdateUser(e){
+    postFormUD.classList.add('hidden')
+    postForm.classList.add('hidden')
+    deleteDiv.classList.add('hidden')
+    updateUserForm.classList.remove('hidden')
+  
+    updateUserForm.reset()
+   }
 
 
 function showForm(e){
   e.preventDefault();
   postFormUD.classList.add('hidden')
   updateUserForm.classList.add('hidden')
+  deleteDiv.classList.add('hidden')
   postForm.classList.remove('hidden')
-};
+  postForm.reset()
+ 
+}
 
 function showFormUD(e, dataFromBtn){
   e.preventDefault();
@@ -561,8 +570,10 @@ function showFormUD(e, dataFromBtn){
   
   postForm.classList.add('hidden')
   updateUserForm.classList.add('hidden')
+  deleteDiv.classList.add('hidden')
   postFormUD.classList.remove('hidden')
-};
+  postFormUD.reset()
+}
 
 function showWarning(e){
   e.preventDefault();
@@ -622,20 +633,17 @@ function showOtherProfile(user) {  //PACO - pass user object to show profile
   baseInfo.innerHTML += userBio
   
   
-  //Add one link
-  const linkList = document.createElement('ul')
-  linkList.setAttribute('class', 'list-group list-group-flush')                   
-  const listItem = document.createElement('li')
-  listItem.setAttribute('class', 'list-group-item d-grid gap-1')
-  const linkBtn = document.createElement('button')
-  linkBtn.textContent = user.username + '\'s followers'
-  linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
-  // linkBtn.setAttribute('data-bs-toggle','modal')
-  // linkBtn.setAttribute('data-bs-target','#list-modal')
-  // linkBtn.addEventListener('click', FUNCTION TO SEE FOLLOWERS???)
-  
-  listItem.appendChild(linkBtn)
-  linkList.appendChild(listItem)
+             //Add one link
+          const linkList = document.createElement('ul')
+          linkList.setAttribute('class', 'list-group list-group-flush')                   
+          const listItem = document.createElement('li')
+          listItem.setAttribute('class', 'list-group-item d-grid gap-1')
+          const linkBtn = document.createElement('button')
+          linkBtn.textContent = user.username + '\'s followers'
+          linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+          
+          listItem.appendChild(linkBtn)
+          linkList.appendChild(listItem)
   
   baseInfo.appendChild(linkList)
   card.appendChild(baseInfo)
@@ -667,64 +675,63 @@ async function otherUserPosts(){
       if (post.image){
         picture = API_URL + 'uploads/posts/' + post.image
       } 
-      const div = document.createElement('div')
-      div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
-      const img = document.createElement('img');
-      img.setAttribute('class', 'img-fluid px-1')
-      img.setAttribute('src', picture)
-      div.appendChild(img)
-      styleDiv.appendChild(div);
-
-      styleDiv.innerHTML += `
-          <div class='card-body col-md-8 flex-wrap'>
-            <h5 class='card-title'>${post.title}</h5>
-            <p class='card-text'>${post.body}</p>
-            <hr>           
-          </div>`
-    
-      //Likes link
-
-      const childDiv = styleDiv.querySelector('.card-body');
-      if (post.likes.length > 0) {  //If there are any likes
-      const likes = document.createElement('button')
-      likes.innerText = post.likes.length + ' likes'
-      likes.setAttribute('class', 'btn btn-link btn-sm text-success')
-      likes.setAttribute('data-bs-toggle','modal')
-      likes.setAttribute('data-bs-target','#list-modal')
-      likes.addEventListener('click', function(e){ showLikers(e, post._id)})
+        const div = document.createElement('div')
+        div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
+        const img = document.createElement('img');
+        img.setAttribute('class', 'img-fluid px-1')
+        img.setAttribute('src', picture)
+        div.appendChild(img)
+        styleDiv.appendChild(div);
+  
+        styleDiv.innerHTML += `
+            <div class='card-body col-md-8 flex-wrap'>
+              <h5 class='card-title'>${post.title}</h5>
+              <p class='card-text'>${post.body}</p>
+              <hr>           
+            </div>`
       
-      childDiv.appendChild(likes);
-      } else {
-      const likes = document.createElement('span')
-      likes.innerText = 'No likes yet'
-      likes.setAttribute('class', 'small text-success ps-2')
-      childDiv.appendChild(likes);
-      }
-
-      //Comments link
-        const comments = document.createElement('button')
-      if (post.commentIds.length > 0) {  //If there are any comments
-        comments.innerText = post.commentIds.length + ' comments'
-      } else {
-        comments.innerText = 'No comments yet'
-      }
-      comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
-      comments.setAttribute('data-bs-toggle', 'modal')
-      comments.setAttribute('data-bs-target', '#list-modal')
-      comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
-      childDiv.appendChild(comments);
-
-      //Update button
-      const updateBtn = document.createElement('button')
-      updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
-      updateBtn.setAttribute('data-bs-toggle','modal')
-      updateBtn.setAttribute('data-bs-target', '#form-modal')
-      updateBtn.textContent = 'Update post'
-
-      updateBtn.addEventListener('click', function(e) {
-      showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
-      styleDiv.querySelector('.card-body').appendChild(updateBtn)
-
+       //Likes link
+  
+       const childDiv = styleDiv.querySelector('.card-body');
+       if (post.likes.length > 0) {  //If there are any likes
+        const likes = document.createElement('button')
+        likes.innerText = post.likes.length + ' likes'
+        likes.setAttribute('class', 'btn btn-link btn-sm text-success')
+        likes.setAttribute('data-bs-toggle','modal')
+        likes.setAttribute('data-bs-target','#list-modal')
+        likes.addEventListener('click', function(e){ showLikers(e, post._id)})
+       
+        childDiv.appendChild(likes);
+       } else {
+        const likes = document.createElement('span')
+        likes.innerText = 'No likes yet'
+        likes.setAttribute('class', 'small text-success ps-2')
+        childDiv.appendChild(likes);
+       }
+  
+       //Comments link
+         const comments = document.createElement('button')
+        if (post.commentIds.length > 0) {  //If there are any comments
+          comments.innerText = post.commentIds.length + ' comments'
+        } else {
+          comments.innerText = 'No comments yet'
+        }
+        comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
+        comments.setAttribute('data-bs-toggle', 'modal')
+        comments.setAttribute('data-bs-target', '#list-modal')
+        comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
+        childDiv.appendChild(comments);
+  
+       //Update button
+       const updateBtn = document.createElement('button')
+       updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
+       updateBtn.textContent = 'Update post'
+  
+       updateBtn.addEventListener('click', function(e) {
+        showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
+       styleDiv.querySelector('.card-body').appendChild(updateBtn)
+  
+  
       card.appendChild(styleDiv);
       profilePosts.appendChild(card) 
     });
@@ -752,7 +759,36 @@ function home(e){
   userviewBtn.removeAttribute('disabled')
   mainFeed.classList.remove('hidden');
   displayMainFeed();  //PACO: THIS DOESNT WORK
-};
+}
+
+async function addLike(e, idOfPost){
+  e.preventDefault();
+  let token = localStorage.getItem('token')
+  try {
+    const res = await axios.put(API_URL + 'posts/likePost/' + idOfPost, {}, {
+      headers: {
+        'Authorization': token
+      }
+    });
+    alertMsg.setAttribute('class', 'alert alert-danger')
+    alertMsg.textContent = 'Your like has been added'
+
+    setTimeout(function () {
+      alertMsg.textContent = "";
+      alertMsg.removeAttribute("class")
+  }, 3000);
+  
+  } catch(error){
+    console.error(error)
+    alertMsg.setAttribute('class', 'alert alert-danger')
+    alertMsg.textContent = 'You have already liked this post'
+    setTimeout(function () {
+      alertMsg.textContent = "";
+      alertMsg.removeAttribute("class")
+  }, 4000);
+  } 
+}
+
 
 function accountSettings(e){
   e.preventDefault();
@@ -780,8 +816,6 @@ postbody.addEventListener('input', countCharacters)
 createPostBtn.addEventListener('click', showForm)
 deletePostBtn.addEventListener('click', showWarning)
 confirmDelete.addEventListener('click', deletePost)
-
-
 
 // START FROM USERVIEW - UNCOMMENT THE FOLLOWING
 // loginView.classList.add('hidden');
@@ -1025,6 +1059,6 @@ signUpButton.addEventListener('click', signUp);
 redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
 // Start from main view: must uncomment next 3 lines
-loginView.classList.add('hidden');
-mainView.classList.remove('hidden');
-displayMainFeed();
+// loginView.classList.add('hidden');
+// mainView.classList.remove('hidden');
+// displayMainFeed();
