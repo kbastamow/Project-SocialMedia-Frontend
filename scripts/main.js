@@ -75,6 +75,9 @@ const sendButtonRecover = document.getElementById('send-button-recover');
 const backToLoginButton = document.getElementById('back-to-login');
 
 const searchButton = document.getElementById('search-button');
+const searchInput = document.getElementById('search-text');
+const resultsModal = new bootstrap.Modal(document.getElementById('resultsModal'), {keyboard: false});
+const results = document.getElementById('results');
 
 // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMzNDVkNGM4NGEzMTQiLCJpYXQiOjE2ODI1MDY5NjJ9.wyXaMIsOWZapkwcvZsM9FJooyZ6uRD4gX-JjRy4sboI';
 
@@ -767,16 +770,16 @@ function showDate(createdAt){
 };
 
 
-// userviewBtn.addEventListener('click', userView)
-// homeBtn.addEventListener('click', home)
-// postForm.addEventListener('submit', createPost)
-// postFormUD.addEventListener('submit', updatePost)
-// updateUserForm.addEventListener('submit', updateUser)
-// addCommentForm.addEventListener('submit', createComment);
-// postbody.addEventListener('input', countCharacters)
-// createPostBtn.addEventListener('click', showForm)
-// deletePostBtn.addEventListener('click', showWarning)
-// confirmDelete.addEventListener('click', deletePost)
+userviewBtn.addEventListener('click', userView)
+homeBtn.addEventListener('click', home)
+postForm.addEventListener('submit', createPost)
+postFormUD.addEventListener('submit', updatePost)
+updateUserForm.addEventListener('submit', updateUser)
+addCommentForm.addEventListener('submit', createComment);
+postbody.addEventListener('input', countCharacters)
+createPostBtn.addEventListener('click', showForm)
+deletePostBtn.addEventListener('click', showWarning)
+confirmDelete.addEventListener('click', deletePost)
 
 
 
@@ -894,13 +897,37 @@ backToLoginButton.addEventListener('click', () => {
 
 searchButton.addEventListener('click', async (e) => {
   e.preventDefault();
-  const searchText = document.getElementById('search-text').value;
   try {
-    const users = await axios.get(API_URL + 'users/getbyusername/' + searchText);
-    if (users.data.length === 0) {
-      alert('No usernames match that criteria');
-    }
-    console.log(users.data);
+    const response = await axios.get(API_URL + 'users/getbyusername/' + searchInput.value);
+    const users = response.data;
+    results.innerHTML = '';
+    if (users.length === 0) {
+      const p = document.createElement('p');
+      p.textContent = 'No matches';
+      results.appendChild(p);
+      resultsModal.show();
+      return '';
+    };
+    users.forEach(person => {
+      //---------------------------------------------------
+      const li = document.createElement('li')
+      li.setAttribute('class', 'container custom-height')
+      if (person.image){
+        picture = API_URL + 'uploads/users/' + person.image
+      }
+      const image = document.createElement('img')
+      image.setAttribute('src', picture)
+      image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+      const personLink= document.createElement('button')
+      personLink.innerText = person.username
+      personLink.setAttribute('class', 'btn btn-link')
+      personLink.addEventListener('click', function(e){getOther(e, person.username) })
+      li.appendChild(image)
+      li.appendChild(personLink)
+      //---------------------------------------------------
+      results.appendChild(li);
+      });
+    resultsModal.show();
   } catch (error) {
     console.error(error);
     alert('Something went wrong. Please try again later');
@@ -993,9 +1020,9 @@ async function redirectToSignUp() {
   registerView.classList.remove('hidden');
 };
 
-// loginButton.addEventListener('click', login);
-// signUpButton.addEventListener('click', signUp);
-// redirectToSignUpButton.addEventListener('click', redirectToSignUp);
+loginButton.addEventListener('click', login);
+signUpButton.addEventListener('click', signUp);
+redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
 // Start from main view: must uncomment next 3 lines
 loginView.classList.add('hidden');

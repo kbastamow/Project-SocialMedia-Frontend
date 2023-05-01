@@ -105,7 +105,7 @@
       <button id="userview-btn" class="navbar-brand btn btn-link fs-6 text-primary">Your profile</button>
       <form class="form-inline">
         <input id="search-text" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button id="search-button" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        <button id="search-button" class="btn btn-outline-success" type="button">Search</button>
       </form>
     </nav>
 
@@ -124,6 +124,23 @@
           </div>
         </div>
       </div> -->
+      <!-- Modal Structure -->
+      <div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="resultsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="resultsModalLabel">Search Results</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="results">
+              <!-- Results will be displayed here -->
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
 
