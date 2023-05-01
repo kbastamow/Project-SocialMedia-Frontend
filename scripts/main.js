@@ -18,6 +18,11 @@ const posttitleUD= document.getElementById("posttitle-update");
 const postbodyUD= document.getElementById("postbody-update");
 const postimageUD = document.getElementById('postimage-update')
 const postFormUD = document.getElementById("post-form-update")
+const warningDiv = document.getElementById("warning-div")
+const deletePostBtn = document.getElementById("delete-post")
+const confirmDelete = document.getElementById("confirm-delete")
+
+
 //Update user form
 const updateBio = document.getElementById("update-bio")
 const updateTitle = document.getElementById("update-title")
@@ -112,13 +117,13 @@ baseInfo.setAttribute('class', 'card-body')
 
         baseInfo.innerHTML += userBio
 
-        const addBioBtn = document.createElement("button")
-        addBioBtn.textContent = 'Add/modify public profile'
-        addBioBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
-        addBioBtn.setAttribute('data-bs-toggle','modal')
-        addBioBtn.setAttribute('data-bs-target','#form-modal')
-        addBioBtn.addEventListener('click', showUpdateUser )
-        baseInfo.appendChild(addBioBtn)
+        const addUpdateBtn = document.createElement("button")
+        addUpdateBtn.textContent = 'Add/modify public profile'
+        addUpdateBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
+        addUpdateBtn.setAttribute('data-bs-toggle','modal')
+        addUpdateBtn.setAttribute('data-bs-target','#form-modal')
+        addUpdateBtn.addEventListener('click', showUpdateUser )
+        baseInfo.appendChild(addUpdateBtn)
 
 //Add the three links
         const linkList = document.createElement('ul')
@@ -245,7 +250,7 @@ async function updateUser(e){
   let tokenKat = localStorage.getItem('token')
   const formData = new FormData();
   if (updateTitle.value.length > 0) formData.append("title", updateTitle.value);
-  if (updateImage.value.length > 0) formData.append("bio", updateBio.value)
+  if (updateBio.value.length > 0) formData.append("bio", updateBio.value)
   if (updateImage.length != 0) formData.append("image", updateImage.files[0])
   
   try{
@@ -298,8 +303,7 @@ async function updatePost(e){
   formData.append("title", posttitleUD.value);
   formData.append("body", postbodyUD.value)
   if (postimageUD.length != 0) formData.append("image", postimageUD.files[0])
-  
-  
+
   //in the following, postId is a global variable where I've temporarily stored post's id when it's update button is clicked
   try{
     const res = await axios.put(API_URL + 'posts/update/' + postInfo.postId, formData, {
@@ -318,6 +322,27 @@ async function updatePost(e){
     console.log(error)
   }
 }
+
+async function deletePost(e) {
+  e.preventDefault();
+  console.log("Write delete post function")
+  console.log(postInfo.postId)
+  let tokenKat = localStorage.getItem('token')
+  try {
+    const res = await axios.delete(API_URL + 'posts/delete/' + postInfo.postId, {
+      headers: {
+        "Authorization": tokenKat,
+      }
+    })
+    console.log("post deleted")
+    warningDiv.classList.add("hidden")
+    userPosts()
+
+  }catch(error){
+    console.log(error)
+  }
+}
+
 
 
 async function showFriends(e){
@@ -466,7 +491,7 @@ function showFormUD(e, dataFromBtn){
     body: dataFromBtn.body,
     postId: dataFromBtn.postId
   } 
- 
+  warningDiv.classList.add("hidden")
   posttitleUD.setAttribute('value', postInfo.title);
   postbodyUD.textContent = postInfo.body
   //global variable that can store this data temporarily
@@ -474,6 +499,11 @@ function showFormUD(e, dataFromBtn){
   postForm.classList.add("hidden")
   updateUserForm.classList.add("hidden")
   postFormUD.classList.remove("hidden")
+}
+
+function showWarning(e){
+  e.preventDefault();
+  warningDiv.classList.remove("hidden");
 }
 
 function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
@@ -484,11 +514,13 @@ function otherUser(e, username){  //FUNCTION YET TO BE WRITTEN
 // showUser(); // MARKER
 // userPosts(); // MARKER
 
-// postForm.addEventListener("submit", createPost)
-// postFormUD.addEventListener("submit", updatePost)
-// updateUserForm.addEventListener("submit", updateUser)
-// postbody.addEventListener("input", countCharacters)
-// createPostBtn.addEventListener("click", showForm)
+postForm.addEventListener("submit", createPost)
+postFormUD.addEventListener("submit", updatePost)
+updateUserForm.addEventListener("submit", updateUser)
+postbody.addEventListener("input", countCharacters)
+createPostBtn.addEventListener("click", showForm)
+deletePostBtn.addEventListener("click", showWarning)
+confirmDelete.addEventListener("click", deletePost)
 
 ///////////////////////////////////////////////////////////////////PACO functions
 
@@ -592,6 +624,7 @@ backToLoginButton.addEventListener('click', () => {
 
 async function displayMainFeed() {
   try {
+    const token = localStorage.getItem('token');
     let response = await axios.get(API_URL + 'posts/getFriendsPosts',{
       headers: {
         Authorization: token
