@@ -172,7 +172,7 @@ profileMain.appendChild(card);
   }
 }
 
-async function userPosts(idOfPoster){ //this is now used for both user and users' friends profiles!
+async function userPosts(idOfPoster){ //PACO: pass userId to get their posts! //this is now used for both user and users' friends profiles!
     try{
   clearDisplay(profilePosts)
   clearDisplay(othersPosts)
@@ -581,7 +581,7 @@ async function getOther(e, username){
 }
 }
 
-function showOtherProfile(user) {
+function showOtherProfile(user) {  //PACO - pass user object to show profile
   console.log(user)
   otherUser.classList.remove('hidden')
   profile.classList.add('hidden')
