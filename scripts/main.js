@@ -38,7 +38,7 @@ let currentCount = document.getElementById('current-count')
 
 const othersMain = document.getElementById('others-main')
 const othersSide = document.getElementById('others-side')
-
+const othersPosts = document.getElementById("others-posts")
 //modal for user card
 const listmodalTitle = document.getElementById('list-modal-title')
 const listmodalList = document.getElementById('list-modal-list')
@@ -172,15 +172,14 @@ profileMain.appendChild(card);
   }
 }
 
-async function userPosts(){
-  
-  try{
+async function userPosts(idOfPoster){ //this is now used for both user and users' friends profiles!
+    try{
   clearDisplay(profilePosts)
+  clearDisplay(othersPosts)
   let token = localStorage.getItem('token')
-  const res = await axios.get(API_URL + 'posts/getUsersPosts', {
+  const res = await axios.get(API_URL + 'posts/getUsersPosts/' + idOfPoster, {
       headers: {
         'Authorization': token,
-        '_id': userInfo.id  //Replace this when login is in place!!
       }
   })
   const posts = res.data;
@@ -243,6 +242,8 @@ async function userPosts(){
       comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
       childDiv.appendChild(comments);
 
+//Update button -only if my own posts!!
+      if(idOfPoster === userInfo.id) { 
      //Update button
      const updateBtn = document.createElement('button')
      updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
@@ -253,10 +254,12 @@ async function userPosts(){
      updateBtn.addEventListener('click', function(e) {
       showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
      styleDiv.querySelector('.card-body').appendChild(updateBtn)
-
+    }
 
     card.appendChild(styleDiv);
-    profilePosts.appendChild(card) 
+
+    //APPEND TO HTML depending if user or friend
+    (idOfPoster === userInfo.id) ? profilePosts.appendChild(card) : othersPosts.appendChild(card); 
   });
 } catch(error){
   console.error(error);
@@ -308,7 +311,7 @@ async function createPost(e){
       }
     })
     console.log(res.data)
-    userPosts()
+    userPosts(userInfo.id)
   } catch(error){
     console.log(error)
   }
@@ -332,7 +335,7 @@ async function updatePost(e){
       }
     })
     console.log(res.data)
-    userPosts()
+    userPosts(userInfo.id)
     
     
     posttitleUD.removeAttribute('value', postInfo.title);
@@ -355,7 +358,7 @@ async function deletePost(e) {
     })
     console.log('post deleted')
     warningDiv.classList.add('hidden')
-    userPosts()
+    userPosts(userInfo.id)
 
   }catch(error){
     console.log(error)
@@ -364,6 +367,8 @@ async function deletePost(e) {
 
 async function showFriends(e){
   e.preventDefault();
+   //Hides comment field since we are using the same modal
+   addComment.classList.add('hidden');
 
   try {
   listmodalTitle.innerText = 'People you follow'
@@ -470,7 +475,6 @@ async function showLikers(e, postId){
 }
 
 function showComments(e, {commentArray, idOfPost}){
-  console.log(idOfPost)
   e.preventDefault();
   clearDisplay(listmodalList)
 
@@ -500,18 +504,17 @@ async function createComment(e){
       headers: {authorization: token}
     })
     postInfo.postId = '' //clear variable
-    userPosts()
+    userPosts(userInfo.id)
   }catch(error){
     console.error(error);
   }
 }
 
-
 //Counts the characters left when creating a post
-function countCharacters(){
-let enteredText = postbody.value.length;
-let whatsLeft = 700 - enteredText;
-currentCount.innerText = whatsLeft + '/700';
+function countCharacters() {
+  let enteredText = postbody.value.length;
+  let whatsLeft = 700 - enteredText;
+  currentCount.innerText = whatsLeft + '/700';
 }
 
 function clearDisplay(element){
@@ -563,21 +566,20 @@ function showWarning(e){
   warningDiv.classList.remove('hidden');
 }
 
-async function getOther(e, username){  //FUNCTION YET TO BE WRITTEN
+async function getOther(e, username){ 
   e.preventDefault();  
-  console.log('Write function to see other user\'s profile')
   console.log(username)
   try {
   const res = await axios.get(API_URL + 'users/getbyusername/' + username)
-  console.log(res.data)
-  showOtherProfile(res.data[0]) //name search returned array
-  // showOtherPosts(res.data[0])
+  console.log(res.data[0]._id)
+  
+  showOtherProfile(res.data[0]) 
 
+  userPosts(res.data[0]._id)  //pass this posters ID to userPosts
 }catch(error){
   console.log(error)
 }
 }
-
 
 function showOtherProfile(user) {
   console.log(user)
@@ -636,10 +638,98 @@ function showOtherProfile(user) {
   
   
  othersMain.appendChild(card);
-  
-
   }
+
+  async function otherUserPosts(){  
   
+    try{
+    clearDisplay(profilePosts)
+    let token = localStorage.getItem('token')
+    const res = await axios.get(API_URL + 'posts/getUsersPosts', {
+        headers: {
+          'Authorization': token,
+          '_id': userInfo.id  
+        }
+    })
+    const posts = res.data;
+    posts.posts.forEach(post => {
+  
+      const card = document.createElement('div');
+      card.setAttribute('class', 'card m-3 shadow')
+      const styleDiv = document.createElement('div');
+      styleDiv.setAttribute('class', 'row no-gutters w-100 mx-auto')
+      
+      let picture = './assets/post_img.png'
+      if (post.image){
+        picture = API_URL + 'uploads/posts/' + post.image
+      } 
+        const div = document.createElement('div')
+        div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
+        const img = document.createElement('img');
+        img.setAttribute('class', 'img-fluid px-1')
+        img.setAttribute('src', picture)
+        div.appendChild(img)
+        styleDiv.appendChild(div);
+  
+        styleDiv.innerHTML += `
+            <div class='card-body col-md-8 flex-wrap'>
+              <h5 class='card-title'>${post.title}</h5>
+              <p class='card-text'>${post.body}</p>
+              <hr>           
+            </div>`
+      
+       //Likes link
+  
+       const childDiv = styleDiv.querySelector('.card-body');
+       if (post.likes.length > 0) {  //If there are any likes
+        const likes = document.createElement('button')
+        likes.innerText = post.likes.length + ' likes'
+        likes.setAttribute('class', 'btn btn-link btn-sm text-success')
+        likes.setAttribute('data-bs-toggle','modal')
+        likes.setAttribute('data-bs-target','#list-modal')
+        likes.addEventListener('click', function(e){ showLikers(e, post._id)})
+       
+        childDiv.appendChild(likes);
+       } else {
+        const likes = document.createElement('span')
+        likes.innerText = 'No likes yet'
+        likes.setAttribute('class', 'small text-success ps-2')
+        childDiv.appendChild(likes);
+       }
+  
+       //Comments link
+         const comments = document.createElement('button')
+        if (post.commentIds.length > 0) {  //If there are any comments
+          comments.innerText = post.commentIds.length + ' comments'
+        } else {
+          comments.innerText = 'No comments yet'
+        }
+        comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
+        comments.setAttribute('data-bs-toggle', 'modal')
+        comments.setAttribute('data-bs-target', '#list-modal')
+        comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
+        childDiv.appendChild(comments);
+  
+       //Update button
+       const updateBtn = document.createElement('button')
+       updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
+       updateBtn.setAttribute('data-bs-toggle','modal')
+       updateBtn.setAttribute('data-bs-target', '#form-modal')
+       updateBtn.textContent = 'Update post'
+  
+       updateBtn.addEventListener('click', function(e) {
+        showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
+       styleDiv.querySelector('.card-body').appendChild(updateBtn)
+  
+  
+      card.appendChild(styleDiv);
+      profilePosts.appendChild(card) 
+    });
+  } catch(error){
+    console.error(error);
+  }
+  }
+
 function userView(e){
   e.preventDefault();
   mainFeed.classList.add('hidden')
@@ -649,7 +739,7 @@ function userView(e){
   profile.classList.remove('hidden')
 
   showUser(); // MARKER
-  userPosts(); // MARKER
+  userPosts(userInfo.id); // MARKER
 
 }
 
@@ -687,16 +777,11 @@ confirmDelete.addEventListener('click', deletePost)
 // loginView.classList.add('hidden');
 // profile.classList.remove('hidden')
 // showUser(); 
-// userPosts(); 
+// userPosts(userInfo.id); 
 
 
 
 ///////////////////////////////////////////////////////////////////PACO functions
-
-
-
-
-
 
 
 async function login(e) {
