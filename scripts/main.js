@@ -74,6 +74,8 @@ const forgotPasswordForm = document.getElementById('forgot-password-form');
 const sendButtonRecover = document.getElementById('send-button-recover');
 const backToLoginButton = document.getElementById('back-to-login');
 
+const searchButton = document.getElementById('search-button');
+
 // const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDQ4Zjg5NTY0ZTMzNDVkNGM4NGEzMTQiLCJpYXQiOjE2ODI1MDY5NjJ9.wyXaMIsOWZapkwcvZsM9FJooyZ6uRD4gX-JjRy4sboI';
 
 
@@ -98,16 +100,16 @@ async function showUser(){
     if (user.image){
       picture = API_URL + 'uploads/users/' + user.image
     }
-const profilePic = document.createElement('img')
-profilePic.setAttribute('class', 'card-img-top')
-profilePic.setAttribute('src', picture)
-card.appendChild(profilePic)
+    const profilePic = document.createElement('img')
+    profilePic.setAttribute('class', 'card-img-top')
+    profilePic.setAttribute('src', picture)
+    card.appendChild(profilePic)
 
-//Name, title and biography
-userInfo.id = user._id  //save userId in a variable to use in other functions - CLEAR ON LOGOUT!!!!!!!!!!!!
+    //Name, title and biography
+    userInfo.id = user._id  //save userId in a variable to use in other functions - CLEAR ON LOGOUT!!!!!!!!!!!!
 
-const baseInfo = document.createElement('div')
-baseInfo.setAttribute('class', 'card-body')
+    const baseInfo = document.createElement('div')
+    baseInfo.setAttribute('class', 'card-body')
 
         const userName = `<h5 class='card-title'>${user.username}</h5>`
         baseInfo.innerHTML = userName
@@ -132,7 +134,7 @@ baseInfo.setAttribute('class', 'card-body')
         addUpdateBtn.addEventListener('click', showUpdateUser )
         baseInfo.appendChild(addUpdateBtn)
 
-//Add the three links
+        //Add the three links
         const linkList = document.createElement('ul')
         linkList.setAttribute('class', 'list-group list-group-flush')
 
@@ -160,42 +162,41 @@ baseInfo.setAttribute('class', 'card-body')
             //ADD EVENT LISTENERS!!
             listItem.appendChild(linkBtn)
             linkList.appendChild(listItem)
-    })
+        })
 
-baseInfo.appendChild(linkList)
-card.appendChild(baseInfo)
+        baseInfo.appendChild(linkList)
+        card.appendChild(baseInfo)
 
+        profileMain.appendChild(card);
 
-profileMain.appendChild(card);
-
-   }catch(error){
-    console.error(error);
+      }catch(error){
+        console.error(error);
+      }
   }
-}
 
 async function userPosts(idOfPoster){ //PACO: pass userId to get their posts! //this is now used for both user and users' friends profiles!
-    try{
-  clearDisplay(profilePosts)
-  clearDisplay(othersPosts)
-  let token = localStorage.getItem('token')
-  const res = await axios.get(API_URL + 'posts/getUsersPosts/' + idOfPoster, {
-      headers: {
-        'Authorization': token,
-      }
-  })
-  const posts = res.data;
-  console.log(posts);
-  posts.posts.forEach(post => {
+  try{
+    clearDisplay(profilePosts)
+    clearDisplay(othersPosts)
+    let token = localStorage.getItem('token')
+    const res = await axios.get(API_URL + 'posts/getUsersPosts/' + idOfPoster, {
+        headers: {
+          'Authorization': token,
+        }
+    })
+    const posts = res.data;
+    console.log(posts);
+    posts.posts.forEach(post => {
 
-    const card = document.createElement('div');
-    card.setAttribute('class', 'card m-3 shadow')
-    const styleDiv = document.createElement('div');
-    styleDiv.setAttribute('class', 'row no-gutters w-100 mx-auto')
-    
-    let picture = './assets/post_img.png'
-    if (post.image){
-      picture = API_URL + 'uploads/posts/' + post.image
-    } 
+      const card = document.createElement('div');
+      card.setAttribute('class', 'card m-3 shadow')
+      const styleDiv = document.createElement('div');
+      styleDiv.setAttribute('class', 'row no-gutters w-100 mx-auto')
+      
+      let picture = './assets/post_img.png'
+      if (post.image){
+        picture = API_URL + 'uploads/posts/' + post.image
+      } 
       const div = document.createElement('div')
       div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
       const img = document.createElement('img');
@@ -211,27 +212,27 @@ async function userPosts(idOfPoster){ //PACO: pass userId to get their posts! //
             <hr>           
           </div>`
     
-     //Likes link
+      //Likes link
 
-     const childDiv = styleDiv.querySelector('.card-body');
-     if (post.likes.length > 0) {  //If there are any likes
-      const likes = document.createElement('button')
-      likes.innerText = post.likes.length + ' likes'
-      likes.setAttribute('class', 'btn btn-link btn-sm text-success')
-      likes.setAttribute('data-bs-toggle','modal')
-      likes.setAttribute('data-bs-target','#list-modal')
-      likes.addEventListener('click', function(e){ showLikers(e, post._id)})
-     
-      childDiv.appendChild(likes);
-     } else {
-      const likes = document.createElement('span')
-      likes.innerText = 'No likes yet'
-      likes.setAttribute('class', 'small text-success ps-2')
-      childDiv.appendChild(likes);
-     }
+      const childDiv = styleDiv.querySelector('.card-body');
+      if (post.likes.length > 0) {  //If there are any likes
+        const likes = document.createElement('button')
+        likes.innerText = post.likes.length + ' likes'
+        likes.setAttribute('class', 'btn btn-link btn-sm text-success')
+        likes.setAttribute('data-bs-toggle','modal')
+        likes.setAttribute('data-bs-target','#list-modal')
+        likes.addEventListener('click', function(e){ showLikers(e, post._id)})
+      
+        childDiv.appendChild(likes);
+      } else {
+        const likes = document.createElement('span')
+        likes.innerText = 'No likes yet'
+        likes.setAttribute('class', 'small text-success ps-2')
+        childDiv.appendChild(likes);
+      }
 
-     //Comments link
-       const comments = document.createElement('button')
+      //Comments link
+        const comments = document.createElement('button')
       if (post.commentIds.length > 0) {  //If there are any comments
         comments.innerText = post.commentIds.length + ' comments'
       } else {
@@ -243,29 +244,29 @@ async function userPosts(idOfPoster){ //PACO: pass userId to get their posts! //
       comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
       childDiv.appendChild(comments);
 
-//Update button -only if my own posts!!
+      //Update button -only if my own posts!!
       if(idOfPoster === userInfo.id) { 
-     //Update button
-     const updateBtn = document.createElement('button')
-     updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
-     updateBtn.setAttribute('data-bs-toggle','modal')
-     updateBtn.setAttribute('data-bs-target', '#form-modal')
-     updateBtn.textContent = 'Update post'
+      //Update button
+      const updateBtn = document.createElement('button')
+      updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
+      updateBtn.setAttribute('data-bs-toggle','modal')
+      updateBtn.setAttribute('data-bs-target', '#form-modal')
+      updateBtn.textContent = 'Update post'
 
-     updateBtn.addEventListener('click', function(e) {
-      showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
-     styleDiv.querySelector('.card-body').appendChild(updateBtn)
-    }
+      updateBtn.addEventListener('click', function(e) {
+        showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
+      styleDiv.querySelector('.card-body').appendChild(updateBtn)
+      }
 
-    card.appendChild(styleDiv);
+      card.appendChild(styleDiv);
 
-    //APPEND TO HTML depending if user or friend
-    (idOfPoster === userInfo.id) ? profilePosts.appendChild(card) : othersPosts.appendChild(card); 
-  });
-} catch(error){
+      //APPEND TO HTML depending if user or friend
+      (idOfPoster === userInfo.id) ? profilePosts.appendChild(card) : othersPosts.appendChild(card); 
+    });
+  } catch(error){
   console.error(error);
-}
-}
+  }
+};
 
 async function updateUser(e){ 
   e.preventDefault();
@@ -363,7 +364,7 @@ async function deletePost(e) {
   }catch(error){
     console.log(error)
   }
-}
+};
 
 async function showFriends(e){
   e.preventDefault();
@@ -371,39 +372,39 @@ async function showFriends(e){
    addComment.classList.add('hidden');
 
   try {
-  listmodalTitle.innerText = 'People you follow'
-  clearDisplay(listmodalList)
-  const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
-  let picture = '../assets/no_image.jpeg'
-  
-  res.data.following.forEach(person => {
-    const li = document.createElement('li')
-    li.setAttribute('class', 'container custom-height')
-
-
-    if (person.image){
-      picture = API_URL + 'uploads/users/' + person.image
-    }
+    listmodalTitle.innerText = 'People you follow'
+    clearDisplay(listmodalList)
+    const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+    let picture = '../assets/no_image.jpeg'
     
-    const image = document.createElement('img')
-    image.setAttribute('src', picture)
-    image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+    res.data.following.forEach(person => {
+      const li = document.createElement('li')
+      li.setAttribute('class', 'container custom-height')
 
-    const personLink= document.createElement('button')
-    personLink.innerText = person.username
-    personLink.setAttribute('class', 'btn btn-link')
-    personLink.addEventListener('click', function(e){getOther(e, person.username) })
-   
- 
-    li.appendChild(image)
-    li.appendChild(personLink)
 
-    listmodalList.appendChild(li)
-  })
-} catch(error) {
-  console.error(error)
-}
-}
+      if (person.image){
+        picture = API_URL + 'uploads/users/' + person.image
+      }
+      
+      const image = document.createElement('img')
+      image.setAttribute('src', picture)
+      image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+
+      const personLink= document.createElement('button')
+      personLink.innerText = person.username
+      personLink.setAttribute('class', 'btn btn-link')
+      personLink.addEventListener('click', function(e){getOther(e, person.username) })
+    
+  
+      li.appendChild(image)
+      li.appendChild(personLink)
+
+      listmodalList.appendChild(li)
+    })
+  } catch(error) {
+    console.error(error)
+  }
+};
 
 async function showFollowers(e){
   e.preventDefault();
@@ -412,36 +413,36 @@ async function showFollowers(e){
   addComment.classList.add('hidden');
  
   try {
-  listmodalTitle.innerText = 'People who follow you'
-  clearDisplay(listmodalList)
-  const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
+    listmodalTitle.innerText = 'People who follow you'
+    clearDisplay(listmodalList)
+    const res = await axios.get(API_URL + 'users/getbyid/' + userInfo.id)
 
-  res.data.followers.forEach(person => {
-    const li = document.createElement('li')
-    li.setAttribute('class', 'container custom-height')
+    res.data.followers.forEach(person => {
+      const li = document.createElement('li')
+      li.setAttribute('class', 'container custom-height')
 
-    let picture = '../assets/no_image.jpeg'
-    if (person.image){
-      picture = API_URL + 'uploads/users/' + person.image
-    }
-    const image = document.createElement('img')
-    image.setAttribute('src', picture)
-    image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
-    
-    const personLink= document.createElement('button')
-    personLink.innerText = person.username
-    personLink.setAttribute('class', 'btn btn-link')
-    personLink.addEventListener('click', function(e){getOther(e, person.username) })
+      let picture = '../assets/no_image.jpeg'
+      if (person.image){
+        picture = API_URL + 'uploads/users/' + person.image
+      }
+      const image = document.createElement('img')
+      image.setAttribute('src', picture)
+      image.setAttribute('class', 'col-3 rounded-circle p-2 friendlist-img')
+      
+      const personLink= document.createElement('button')
+      personLink.innerText = person.username
+      personLink.setAttribute('class', 'btn btn-link')
+      personLink.addEventListener('click', function(e){getOther(e, person.username) })
 
-    li.appendChild(image)
-    li.appendChild(personLink)
+      li.appendChild(image)
+      li.appendChild(personLink)
 
-    listmodalList.appendChild(li)
-  })
-} catch(error) {
-  console.error(error)
-}
-}
+      listmodalList.appendChild(li)
+    })
+  } catch(error) {
+    console.error(error)
+  }
+};
 
 
 async function showLikers(e, postId){
@@ -450,29 +451,29 @@ async function showLikers(e, postId){
    addComment.classList.add('hidden');
 
   try {
-  listmodalTitle.innerText = 'People who liked your post'
-  clearDisplay(listmodalList)
-  const res = await axios.get(API_URL + 'posts/getbyid/' + postId)
-  console.log(res.data)
-  res.data.likes.forEach(person => {
-    const li = document.createElement('li')
+    listmodalTitle.innerText = 'People who liked your post'
+    clearDisplay(listmodalList)
+    const res = await axios.get(API_URL + 'posts/getbyid/' + postId)
+    console.log(res.data)
+    res.data.likes.forEach(person => {
+      const li = document.createElement('li')
 
-       const icon = document.createElement('span')
-       icon.innerHTML = `<i class='fa-solid fa-heart-circle-plus fa-xl' style='color: #f60909;'></i>`         
-       const personLink= document.createElement('button')
-       personLink.innerText = person.username
-       personLink.setAttribute('class', 'btn btn-link text-decoration-none')
-       personLink.addEventListener('click', function(e){getOther(e, person.username) })
+        const icon = document.createElement('span')
+        icon.innerHTML = `<i class='fa-solid fa-heart-circle-plus fa-xl' style='color: #f60909;'></i>`         
+        const personLink= document.createElement('button')
+        personLink.innerText = person.username
+        personLink.setAttribute('class', 'btn btn-link text-decoration-none')
+        personLink.addEventListener('click', function(e){getOther(e, person.username) })
 
-       li.appendChild(icon)
-       li.appendChild(personLink)
+        li.appendChild(icon)
+        li.appendChild(personLink)
 
-    listmodalList.appendChild(li)
-  })
-} catch(error) {
-  console.error(error)
-}
-}
+      listmodalList.appendChild(li)
+    })
+  } catch(error) {
+    console.error(error)
+  }
+};
 
 function showComments(e, {commentArray, idOfPost}){
   e.preventDefault();
@@ -481,20 +482,20 @@ function showComments(e, {commentArray, idOfPost}){
   listmodalTitle.innerText =  (commentArray.length > 0) ? 'Comments' : 'Be first to comment'
 
   commentArray.forEach(comment => {
-  console.log(comment.userId.username)
-    const li = document.createElement('li')   
-    const content= document.createElement('div')
-    content.innerHTML = `<p class='small text-secondary mb-0'>by ${comment.userId.username} :</p>
-                           <p>${comment.body}</p><hr>                      
-                          `
-    
-    li.appendChild(content)
+    console.log(comment.userId.username)
+      const li = document.createElement('li')   
+      const content= document.createElement('div')
+      content.innerHTML = `<p class='small text-secondary mb-0'>by ${comment.userId.username} :</p>
+                            <p>${comment.body}</p><hr>                      
+                            `
+      
+      li.appendChild(content)
 
- listmodalList.appendChild(li)
-})
-addComment.classList.remove('hidden');
-postInfo.postId = idOfPost //store in variable temporarily
-}
+  listmodalList.appendChild(li)
+  })
+  addComment.classList.remove('hidden');
+  postInfo.postId = idOfPost //store in variable temporarily
+};
 
 async function createComment(e){
   e.preventDefault()
@@ -508,26 +509,26 @@ async function createComment(e){
   }catch(error){
     console.error(error);
   }
-}
+};
 
 //Counts the characters left when creating a post
 function countCharacters() {
   let enteredText = postbody.value.length;
   let whatsLeft = 700 - enteredText;
   currentCount.innerText = whatsLeft + '/700';
-}
+};
 
 function clearDisplay(element){
  while (element.firstChild){
     element.removeChild(element.firstChild);
-    }
   }
+};
 
-  function showUpdateUser(e){
-    postFormUD.classList.add('hidden')
-    postForm.classList.add('hidden')
-    updateUserForm.classList.remove('hidden')
-   }
+function showUpdateUser(e){
+  postFormUD.classList.add('hidden')
+  postForm.classList.add('hidden')
+  updateUserForm.classList.remove('hidden')
+};
 
 
 function showForm(e){
@@ -535,8 +536,7 @@ function showForm(e){
   postFormUD.classList.add('hidden')
   updateUserForm.classList.add('hidden')
   postForm.classList.remove('hidden')
- 
-}
+};
 
 function showFormUD(e, dataFromBtn){
   e.preventDefault();
@@ -559,27 +559,27 @@ function showFormUD(e, dataFromBtn){
   postForm.classList.add('hidden')
   updateUserForm.classList.add('hidden')
   postFormUD.classList.remove('hidden')
-}
+};
 
 function showWarning(e){
   e.preventDefault();
   warningDiv.classList.remove('hidden');
-}
+};
 
 async function getOther(e, username){ 
   e.preventDefault();  
   console.log(username)
   try {
-  const res = await axios.get(API_URL + 'users/getbyusername/' + username)
-  console.log(res.data[0]._id)
-  
-  showOtherProfile(res.data[0]) 
+    const res = await axios.get(API_URL + 'users/getbyusername/' + username)
+    console.log(res.data[0]._id)
+    
+    showOtherProfile(res.data[0]) 
 
-  userPosts(res.data[0]._id)  //pass this posters ID to userPosts
-}catch(error){
-  console.log(error)
-}
-}
+    userPosts(res.data[0]._id)  //pass this posters ID to userPosts
+  }catch(error){
+    console.log(error)
+  }
+};
 
 function showOtherProfile(user) {  //PACO - pass user object to show profile
   console.log(user)
@@ -605,45 +605,45 @@ function showOtherProfile(user) {  //PACO - pass user object to show profile
   const baseInfo = document.createElement('div')
   baseInfo.setAttribute('class', 'card-body')
   
-          const userName = `<h5 class='card-title'>${user.username}</h5>`
-          baseInfo.innerHTML = userName
-  
-          if (user.title){
-              const userTitle = `<p class='text-primary'>${user.title}</p>`
-              baseInfo.innerHTML += userTitle
-          }
-          let userBio= `<p class='card-text'>No biography</p>`
-          if (user.bio){
-              userBio = `<p class='card-text'>${user.bio}</p>`   
-          }
-          baseInfo.innerHTML += userBio
+  const userName = `<h5 class='card-title'>${user.username}</h5>`
+  baseInfo.innerHTML = userName
+
+  if (user.title) {
+      const userTitle = `<p class='text-primary'>${user.title}</p>`
+      baseInfo.innerHTML += userTitle
+  }
+  let userBio= `<p class='card-text'>No biography</p>`
+  if (user.bio) {
+      userBio = `<p class='card-text'>${user.bio}</p>`   
+  }
+  baseInfo.innerHTML += userBio
   
   
   //Add one link
-          const linkList = document.createElement('ul')
-          linkList.setAttribute('class', 'list-group list-group-flush')                   
-          const listItem = document.createElement('li')
-          listItem.setAttribute('class', 'list-group-item d-grid gap-1')
-          const linkBtn = document.createElement('button')
-          linkBtn.textContent = user.username + '\'s followers'
-          linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
-          // linkBtn.setAttribute('data-bs-toggle','modal')
-          // linkBtn.setAttribute('data-bs-target','#list-modal')
-          // linkBtn.addEventListener('click', FUNCTION TO SEE FOLLOWERS???)
-          
-          listItem.appendChild(linkBtn)
-          linkList.appendChild(listItem)
+  const linkList = document.createElement('ul')
+  linkList.setAttribute('class', 'list-group list-group-flush')                   
+  const listItem = document.createElement('li')
+  listItem.setAttribute('class', 'list-group-item d-grid gap-1')
+  const linkBtn = document.createElement('button')
+  linkBtn.textContent = user.username + '\'s followers'
+  linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+  // linkBtn.setAttribute('data-bs-toggle','modal')
+  // linkBtn.setAttribute('data-bs-target','#list-modal')
+  // linkBtn.addEventListener('click', FUNCTION TO SEE FOLLOWERS???)
+  
+  listItem.appendChild(linkBtn)
+  linkList.appendChild(listItem)
   
   baseInfo.appendChild(linkList)
   card.appendChild(baseInfo)
   
   
  othersMain.appendChild(card);
-  }
+};
 
-  async function otherUserPosts(){  
-  
-    try{
+async function otherUserPosts(){  
+
+  try{
     clearDisplay(profilePosts)
     let token = localStorage.getItem('token')
     const res = await axios.get(API_URL + 'posts/getUsersPosts', {
@@ -654,7 +654,7 @@ function showOtherProfile(user) {  //PACO - pass user object to show profile
     })
     const posts = res.data;
     posts.posts.forEach(post => {
-  
+
       const card = document.createElement('div');
       card.setAttribute('class', 'card m-3 shadow')
       const styleDiv = document.createElement('div');
@@ -664,72 +664,71 @@ function showOtherProfile(user) {  //PACO - pass user object to show profile
       if (post.image){
         picture = API_URL + 'uploads/posts/' + post.image
       } 
-        const div = document.createElement('div')
-        div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
-        const img = document.createElement('img');
-        img.setAttribute('class', 'img-fluid px-1')
-        img.setAttribute('src', picture)
-        div.appendChild(img)
-        styleDiv.appendChild(div);
-  
-        styleDiv.innerHTML += `
-            <div class='card-body col-md-8 flex-wrap'>
-              <h5 class='card-title'>${post.title}</h5>
-              <p class='card-text'>${post.body}</p>
-              <hr>           
-            </div>`
+      const div = document.createElement('div')
+      div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
+      const img = document.createElement('img');
+      img.setAttribute('class', 'img-fluid px-1')
+      img.setAttribute('src', picture)
+      div.appendChild(img)
+      styleDiv.appendChild(div);
+
+      styleDiv.innerHTML += `
+          <div class='card-body col-md-8 flex-wrap'>
+            <h5 class='card-title'>${post.title}</h5>
+            <p class='card-text'>${post.body}</p>
+            <hr>           
+          </div>`
+    
+      //Likes link
+
+      const childDiv = styleDiv.querySelector('.card-body');
+      if (post.likes.length > 0) {  //If there are any likes
+      const likes = document.createElement('button')
+      likes.innerText = post.likes.length + ' likes'
+      likes.setAttribute('class', 'btn btn-link btn-sm text-success')
+      likes.setAttribute('data-bs-toggle','modal')
+      likes.setAttribute('data-bs-target','#list-modal')
+      likes.addEventListener('click', function(e){ showLikers(e, post._id)})
       
-       //Likes link
-  
-       const childDiv = styleDiv.querySelector('.card-body');
-       if (post.likes.length > 0) {  //If there are any likes
-        const likes = document.createElement('button')
-        likes.innerText = post.likes.length + ' likes'
-        likes.setAttribute('class', 'btn btn-link btn-sm text-success')
-        likes.setAttribute('data-bs-toggle','modal')
-        likes.setAttribute('data-bs-target','#list-modal')
-        likes.addEventListener('click', function(e){ showLikers(e, post._id)})
-       
-        childDiv.appendChild(likes);
-       } else {
-        const likes = document.createElement('span')
-        likes.innerText = 'No likes yet'
-        likes.setAttribute('class', 'small text-success ps-2')
-        childDiv.appendChild(likes);
-       }
-  
-       //Comments link
-         const comments = document.createElement('button')
-        if (post.commentIds.length > 0) {  //If there are any comments
-          comments.innerText = post.commentIds.length + ' comments'
-        } else {
-          comments.innerText = 'No comments yet'
-        }
-        comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
-        comments.setAttribute('data-bs-toggle', 'modal')
-        comments.setAttribute('data-bs-target', '#list-modal')
-        comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
-        childDiv.appendChild(comments);
-  
-       //Update button
-       const updateBtn = document.createElement('button')
-       updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
-       updateBtn.setAttribute('data-bs-toggle','modal')
-       updateBtn.setAttribute('data-bs-target', '#form-modal')
-       updateBtn.textContent = 'Update post'
-  
-       updateBtn.addEventListener('click', function(e) {
-        showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
-       styleDiv.querySelector('.card-body').appendChild(updateBtn)
-  
-  
+      childDiv.appendChild(likes);
+      } else {
+      const likes = document.createElement('span')
+      likes.innerText = 'No likes yet'
+      likes.setAttribute('class', 'small text-success ps-2')
+      childDiv.appendChild(likes);
+      }
+
+      //Comments link
+        const comments = document.createElement('button')
+      if (post.commentIds.length > 0) {  //If there are any comments
+        comments.innerText = post.commentIds.length + ' comments'
+      } else {
+        comments.innerText = 'No comments yet'
+      }
+      comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
+      comments.setAttribute('data-bs-toggle', 'modal')
+      comments.setAttribute('data-bs-target', '#list-modal')
+      comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
+      childDiv.appendChild(comments);
+
+      //Update button
+      const updateBtn = document.createElement('button')
+      updateBtn.setAttribute('class','btn btn-light y btn-sm d-block p-2 ms-auto' )
+      updateBtn.setAttribute('data-bs-toggle','modal')
+      updateBtn.setAttribute('data-bs-target', '#form-modal')
+      updateBtn.textContent = 'Update post'
+
+      updateBtn.addEventListener('click', function(e) {
+      showFormUD(e, {title: post.title, body: post.body, postId: post._id})}) //passing parameters to use in update
+      styleDiv.querySelector('.card-body').appendChild(updateBtn)
+
       card.appendChild(styleDiv);
       profilePosts.appendChild(card) 
     });
   } catch(error){
     console.error(error);
   }
-  }
+};
 
 function userView(e){
   e.preventDefault();
@@ -741,8 +740,7 @@ function userView(e){
 
   showUser(); // MARKER
   userPosts(userInfo.id); // MARKER
-
-}
+};
 
 function home(e){
   e.preventDefault();
@@ -751,34 +749,34 @@ function home(e){
   userviewBtn.removeAttribute('disabled')
   mainFeed.classList.remove('hidden');
   displayMainFeed();  //PACO: THIS DOESNT WORK
-}
+};
 
 function accountSettings(e){
   e.preventDefault();
   console.log('Write a function to show the user\'s account settings')
-}
+};
 
 function showDate(createdAt){
   const date = new Date(createdAt);
   const dateString = date.toLocaleString('en-US', {
-  year: 'numeric',
-  day: '2-digit',
-  month: '2-digit',
-})
+    year: 'numeric',
+    day: '2-digit',
+    month: '2-digit',
+  })
   return(dateString);
-}
+};
 
 
-userviewBtn.addEventListener('click', userView)
-homeBtn.addEventListener('click', home)
-postForm.addEventListener('submit', createPost)
-postFormUD.addEventListener('submit', updatePost)
-updateUserForm.addEventListener('submit', updateUser)
-addCommentForm.addEventListener('submit', createComment);
-postbody.addEventListener('input', countCharacters)
-createPostBtn.addEventListener('click', showForm)
-deletePostBtn.addEventListener('click', showWarning)
-confirmDelete.addEventListener('click', deletePost)
+// userviewBtn.addEventListener('click', userView)
+// homeBtn.addEventListener('click', home)
+// postForm.addEventListener('submit', createPost)
+// postFormUD.addEventListener('submit', updatePost)
+// updateUserForm.addEventListener('submit', updateUser)
+// addCommentForm.addEventListener('submit', createComment);
+// postbody.addEventListener('input', countCharacters)
+// createPostBtn.addEventListener('click', showForm)
+// deletePostBtn.addEventListener('click', showWarning)
+// confirmDelete.addEventListener('click', deletePost)
 
 
 
@@ -894,6 +892,21 @@ backToLoginButton.addEventListener('click', () => {
   registerView.classList.add('hidden');
 });
 
+searchButton.addEventListener('click', async (e) => {
+  e.preventDefault();
+  const searchText = document.getElementById('search-text').value;
+  try {
+    const users = await axios.get(API_URL + 'users/getbyusername/' + searchText);
+    if (users.data.length === 0) {
+      alert('No usernames match that criteria');
+    }
+    console.log(users.data);
+  } catch (error) {
+    console.error(error);
+    alert('Something went wrong. Please try again later');
+  }
+});
+
 async function displayMainFeed() {
   try {
     let token = localStorage.getItem('token') //PACO: ADDED THIS or the token won't work
@@ -904,7 +917,7 @@ async function displayMainFeed() {
     });
 
     friendsPosts = response.data.posts;
-    console.log(response.data.posts)
+    // console.log(response.data.posts) PACO: No need for this line of code
 
     clearDisplay(mainFeed)
     mainFeed.innerHTML = `<h4 class="text-center">Latest from your network:</h4>` 
@@ -980,11 +993,11 @@ async function redirectToSignUp() {
   registerView.classList.remove('hidden');
 };
 
-loginButton.addEventListener('click', login);
-signUpButton.addEventListener('click', signUp);
-redirectToSignUpButton.addEventListener('click', redirectToSignUp);
+// loginButton.addEventListener('click', login);
+// signUpButton.addEventListener('click', signUp);
+// redirectToSignUpButton.addEventListener('click', redirectToSignUp);
 
 // Start from main view: must uncomment next 3 lines
-// loginView.classList.add('hidden');
-// mainView.classList.remove('hidden');
-// displayMainFeed();
+loginView.classList.add('hidden');
+mainView.classList.remove('hidden');
+displayMainFeed();
