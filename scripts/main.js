@@ -111,68 +111,68 @@ async function showUser(){
     const baseInfo = document.createElement('div')
     baseInfo.setAttribute('class', 'card-body')
 
-        const userName = `<h5 class='card-title'>${user.username}</h5>`
-        baseInfo.innerHTML = userName
+    const userName = `<h5 class='card-title'>${user.username}</h5>`
+    baseInfo.innerHTML = userName
 
-        if (user.title){
-            const userTitle = `<p class='text-primary'>${user.title}</p>`
-            baseInfo.innerHTML += userTitle
-        }
+    if (user.title){
+        const userTitle = `<p class='text-primary'>${user.title}</p>`
+        baseInfo.innerHTML += userTitle
+    }
 
-        let userBio= `<p class='card-text'>You have not added information about yourself</p>`
-        if (user.bio){
-            userBio = `<p class='card-text'>${user.bio}</p>`   
-        }
+    let userBio= `<p class='card-text'>You have not added information about yourself</p>`
+    if (user.bio){
+        userBio = `<p class='card-text'>${user.bio}</p>`   
+    }
 
-        baseInfo.innerHTML += userBio
+    baseInfo.innerHTML += userBio
 
-        const addUpdateBtn = document.createElement('button')
-        addUpdateBtn.textContent = 'Add/modify public profile'
-        addUpdateBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
-        addUpdateBtn.setAttribute('data-bs-toggle','modal')
-        addUpdateBtn.setAttribute('data-bs-target','#form-modal')
-        addUpdateBtn.addEventListener('click', showUpdateUser )
-        baseInfo.appendChild(addUpdateBtn)
+    const addUpdateBtn = document.createElement('button')
+    addUpdateBtn.textContent = 'Add/modify public profile'
+    addUpdateBtn.setAttribute('class', 'btn btn-link btn-sm text-secondary')
+    addUpdateBtn.setAttribute('data-bs-toggle','modal')
+    addUpdateBtn.setAttribute('data-bs-target','#form-modal')
+    addUpdateBtn.addEventListener('click', showUpdateUser )
+    baseInfo.appendChild(addUpdateBtn)
 
-        //Add the three links
-        const linkList = document.createElement('ul')
-        linkList.setAttribute('class', 'list-group list-group-flush')
+    //Add the three links
+    const linkList = document.createElement('ul')
+    linkList.setAttribute('class', 'list-group list-group-flush')
 
-        const listArray = [{
-          'button': 'People I follow',
-          'function': showFriends  //function but no parenthesis so I can pass it to button click-event
-        }, {
-          'button': 'My followers',
-          'function': showFollowers  
-        }, {
-          'button': 'Account settings',
-          'function': accountSettings //TO BE CHANGED
-        } ]   
-          
+    const listArray = [{
+      'button': 'People I follow',
+      'function': showFriends  //function but no parenthesis so I can pass it to button click-event
+      }, {
+      'button': 'My followers',
+      'function': showFollowers
+      }, {
+      'button': 'Account settings',
+      'function': accountSettings //TO BE CHANGED
+    }]   
+      
 
-        listArray.forEach(item => {
-            const listItem = document.createElement('li')
-            listItem.setAttribute('class', 'list-group-item d-grid gap-1')
-            const linkBtn = document.createElement('button')
-            linkBtn.textContent = item.button
-            linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
-            linkBtn.setAttribute('data-bs-toggle','modal')
-            linkBtn.setAttribute('data-bs-target','#list-modal')
-            linkBtn.addEventListener('click', item.function)
-            //ADD EVENT LISTENERS!!
-            listItem.appendChild(linkBtn)
-            linkList.appendChild(listItem)
-        })
+    listArray.forEach(item => {
+      const listItem = document.createElement('li')
+      listItem.setAttribute('class', 'list-group-item d-grid gap-1')
+      const linkBtn = document.createElement('button')
+      linkBtn.textContent = item.button
+      linkBtn.setAttribute('class', 'btn btn-block bg-success-subtle' )
+      linkBtn.setAttribute('data-bs-toggle','modal')
+      linkBtn.setAttribute('data-bs-target','#list-modal')
+      linkBtn.addEventListener('click', item.function)
+      //ADD EVENT LISTENERS!!
+      listItem.appendChild(linkBtn)
+      linkList.appendChild(listItem)
+    })
 
-        baseInfo.appendChild(linkList)
-        card.appendChild(baseInfo)
+    baseInfo.appendChild(linkList)
+    card.appendChild(baseInfo)
 
-        profileMain.appendChild(card);
+    profileMain.appendChild(card);
 
-      }catch(error){
-        console.error(error);
-      }
+  }catch(error){
+    console.error(error);
   }
+};
 
 async function userPosts(idOfPoster){ //PACO: pass userId to get their posts! //this is now used for both user and users' friends profiles!
   try{
