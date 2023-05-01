@@ -56,7 +56,7 @@ let postInfo = {
   'postId': '',
 } 
 
-let userInfo = {id: '6445388da8130f4b9f500867'} //userID is saved here on login
+let userInfo = {id: '6445388da8130f4b9f500867'} //userID is saved here on login.  SET TO "" on LOGOUT!
 
 ///////////////////////////////Variables Paco
 const loginView = document.getElementById('login-view');
@@ -290,7 +290,6 @@ async function updateUser(e){
   }
 }
 
-
 async function createPost(e){ 
   e.preventDefault();
 
@@ -481,7 +480,7 @@ function showComments(e, {commentArray, idOfPost}){
   listmodalTitle.innerText =  (commentArray.length > 0) ? 'Comments' : 'Be first to comment'
 
   commentArray.forEach(comment => {
-
+  console.log(comment.userId.username)
     const li = document.createElement('li')   
     const content= document.createElement('div')
     content.innerHTML = `<p class='small text-secondary mb-0'>by ${comment.userId.username} :</p>
@@ -583,6 +582,7 @@ async function getOther(e, username){
 
 function showOtherProfile(user) {  //PACO - pass user object to show profile
   console.log(user)
+  clearDisplay(othersMain)
   otherUser.classList.remove('hidden')
   profile.classList.add('hidden')
   homeBtn.removeAttribute('disabled')
@@ -752,12 +752,20 @@ function home(e){
   displayMainFeed();  //PACO: THIS DOESNT WORK
 }
 
-
 function accountSettings(e){
   e.preventDefault();
   console.log('Write a function to show the user\'s account settings')
 }
 
+function showDate(createdAt){
+  const date = new Date(createdAt);
+  const dateString = date.toLocaleString('en-US', {
+  year: 'numeric',
+  day: '2-digit',
+  month: '2-digit',
+})
+  return(dateString);
+}
 
 
 userviewBtn.addEventListener('click', userView)
@@ -887,34 +895,71 @@ async function displayMainFeed() {
     });
 
     friendsPosts = response.data.posts;
+    console.log(response.data.posts)
 
+    clearDisplay(mainFeed)
+    mainFeed.innerHTML = `<h4 class="text-center">Latest from your network:</h4>` 
     friendsPosts.forEach(post => {
-      const card = document.createElement('div');
+            const card = document.createElement('div');
       card.setAttribute('class', 'card m-3 shadow')
       const styleDiv = document.createElement('div');
-      styleDiv.setAttribute('class', 'row no-gutters w-100')
+      styleDiv.setAttribute('class', 'row no-gutters w-100 mx-auto')
+      
       let picture = './assets/post_img.png'
-      // card.setAttribute('style', 'width: 18rem')
       if (post.image){
         picture = API_URL + 'uploads/posts/' + post.image
       } 
-      const div = document.createElement('div')
-      div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
-      const img = document.createElement('img');
-      img.setAttribute('class', 'img-fluid px-1')
-      img.setAttribute('src', picture)
-      div.appendChild(img)
-      styleDiv.appendChild(div);
-    
-      styleDiv.innerHTML += `
-            <div class='card-body col-md-8'>
+        const div = document.createElement('div')
+        div.setAttribute('class', 'col-md-4 d-flex justify-content-center align-items-center' )
+        const img = document.createElement('img');
+        img.setAttribute('class', 'img-fluid px-1')
+        img.setAttribute('src', picture)
+        div.appendChild(img)
+        styleDiv.appendChild(div);
+  
+        styleDiv.innerHTML += `
+            <div class='card-body col-md-8 flex-wrap'>
+              <p class="text-secondary">${post.userId.username} posted on ${showDate(post.createdAt)}:</p>
               <h5 class='card-title'>${post.title}</h5>
-              <p class='card-text'>${post.body}</p> 
-              <p class='small'>${post.likes.length} likes</p>          
+              <p class='card-text'>${post.body}</p>
+              <hr>           
             </div>`
       
-      card.appendChild(styleDiv);
-      mainFeed.appendChild(card)
+       //Likes link
+  
+       const childDiv = styleDiv.querySelector('.card-body');
+       if (post.likes.length > 0) {  //If there are any likes
+        const likes = document.createElement('button')
+        likes.innerText = post.likes.length + ' likes'
+        likes.setAttribute('class', 'btn btn-link btn-sm text-success')
+        likes.setAttribute('data-bs-toggle','modal')
+        likes.setAttribute('data-bs-target','#list-modal')
+        likes.addEventListener('click', function(e){ showLikers(e, post._id)})
+       
+        childDiv.appendChild(likes);
+       } else {
+        const likes = document.createElement('span')
+        likes.innerText = 'No likes yet'
+        likes.setAttribute('class', 'small text-success ps-2')
+        childDiv.appendChild(likes);
+       }
+  
+       //Comments link
+         const comments = document.createElement('button')
+        if (post.commentIds.length > 0) {  //If there are any comments
+          comments.innerText = post.commentIds.length + ' comments'
+        } else {
+          comments.innerText = 'No comments yet'
+        }
+        comments.setAttribute('class', 'btn btn-link btn-sm text-decoration-none')
+        comments.setAttribute('data-bs-toggle', 'modal')
+        comments.setAttribute('data-bs-target', '#list-modal')
+        comments.addEventListener('click', function (e) { showComments(e, { commentArray: post.commentIds, idOfPost: post._id }) })
+        childDiv.appendChild(comments);
+  
+         card.appendChild(styleDiv);
+         
+         mainFeed.appendChild(card)
     });
   } catch (error) {
     console.error(error);
